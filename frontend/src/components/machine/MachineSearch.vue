@@ -72,7 +72,7 @@
 
 <script>
 export default {
-  name: "SearchBar",
+  name: "MachineSearch",
   data() {
     return {
       searchq: "",

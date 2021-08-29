@@ -139,7 +139,7 @@ class ModelViewSet(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
         model = self.queryset.filter(**data)
-        serializer_class = OsSerializer
+        serializer_class = ModelSerializer
         serializer = serializer_class(model, many=True)
 
         if model.count() == 0:
@@ -158,7 +158,7 @@ class ModelViewSet(viewsets.ViewSet):
         if request.method == 'GET':
             query = request.query_params.get('q', '')
         model = self.queryset.filter(
-            Q(name__icontains=query) | Q(type__icontains=query) | Q(cpu__icontains=query)
+            Q(name__icontains=query) | Q(cpu__icontains=query)
         )
         serializer_class = ModelSerializer
         serializer = serializer_class(model, many=True)

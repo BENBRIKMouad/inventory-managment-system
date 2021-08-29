@@ -21,8 +21,8 @@
           mx-auto
           mt-6
           transition-all
-    
         "
+        @click="$router.push({ path: tab.path })"
       >
         <font-awesome-icon :icon="tab.icon" class="lg:text-2xl lg:mr-4 " />
         <p class="lg:text-lg font-semibold lg:block hidden antialiased  bg-clip-text text-transparent bg-gradient-to-r from-green-500 to-blue-500 ">{{ tab.title }}</p>
@@ -48,9 +48,9 @@ export default {
   data() {
     return {
       tabs: [
-        { icon: "laptop", title: "machine" },
-        { icon: "layer-group", title: "model" },
-        { icon: "laptop-code", title: "os" },
+        { icon: "laptop", title: "machine",path:"Main" },
+        { icon: "layer-group", title: "model",path:"Model" },
+        { icon: "laptop-code", title: "os",path:"" },
       ],
     };
   },

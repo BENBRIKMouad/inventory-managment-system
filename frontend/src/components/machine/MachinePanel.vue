@@ -1,18 +1,18 @@
 <template>
   <div class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center ">
-    <search-bar></search-bar>
-    <dash-board></dash-board >
+    <machine-search></machine-search>
+    <dash-board></dash-board>
     <div class="flex justify-center items-center">
-    <data-table :data="data"></data-table>
+    <machine-table :data="data"></machine-table>
     </div>
     
   </div>
 </template>
 
 <script>
-import SearchBar from "./SearchBar.vue";
-import DashBoard from "./DashBoard.vue";
-import DataTable from "./DataTable.vue";
+import MachineSearch from "./MachineSearch.vue";
+import DashBoard from "../DashBoard.vue";
+import MachineTable from "./MachineTable.vue";
 export default {
   name: "MainPanel",
   data(){
@@ -21,9 +21,9 @@ export default {
     }
   },
   components: {
-    SearchBar,
+    MachineSearch,
     DashBoard,
-    DataTable,
+    MachineTable,
   },
   mounted () {
   

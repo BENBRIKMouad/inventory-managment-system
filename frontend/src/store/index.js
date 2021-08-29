@@ -78,7 +78,9 @@ export default new Vuex.Store({
         },
         url: `${server}api/inventory/machine/`,
       });
-       context.dispatch("getMachines");
+      context.dispatch("getMachines");
+      context.commit("setMachineCount", this.state["modelsCount"] + 1);
+      
     },
     async searchMachines(context, q) {
       const { data } = await axios({
@@ -94,7 +96,14 @@ export default new Vuex.Store({
       });
       context.commit("setMachines", data);
     },
-
+    async deleteMchine(context, id) {
+      await axios({
+        method: "delete",
+        url: server + "api/inventory/machine/" + id + "/",
+      });
+      context.commit("setMachineCount", this.state["modelsCount"] - 1);
+      context.dispatch("getMachines");
+    },
     async filterMachines(
       context,
       { model, ref, sn, cpu, os, ram, stockage, machine }
@@ -121,14 +130,16 @@ export default new Vuex.Store({
       });
       context.commit("setMachines", data);
     },
-
     async getMachineCount(context) {
       const { data } = await axios({
         method: "get",
         url: server + "api/inventory/machine/",
       });
+      
       context.commit("setMachineCount", data.count);
+
     },
+
     async getModels(context) {
       const { data } = await axios({
         method: "get",
@@ -136,7 +147,73 @@ export default new Vuex.Store({
       });
       context.commit("setModels", data);
     },
-
+    async addModel(context, { name, ram, cpu }) {
+      const { data } = await axios({
+        method: "post",
+        data: {
+          name: name,
+          ram: ram,
+          cpu: cpu,
+        },
+        url: `${server}api/inventory/model/`,
+      });
+      context.dispatch("getModels");
+      context.commit("setModelCount", this.state["modelsCount"] + 1);
+    },
+    async updateModel(context, { id, name, ram, cpu }) {
+      await axios({
+        method: "patch",
+        data: {
+          name: name,
+          ram: ram,
+          cpu: cpu,
+        },
+        url: `${server}api/inventory/model/${id}/`,
+      });
+      context.dispatch("getModels");
+    },
+    async deleteModel(context, id) {
+      await axios({
+        method: "delete",
+        url: server + "api/inventory/model/" + id + "/",
+      });
+      context.commit("setModelCount", this.state["modelsCount"] - 1);
+      context.dispatch("getModelCount");
+    },
+    async searchModels(context, q) {
+      const { data } = await axios({
+        method: "post",
+        url: server + "api/inventory/model/search/",
+        data: {
+          query: q,
+        },
+      }).catch(function(error) {
+        if (error.response.status == 404) {
+          context.commit("setModels", []);
+        }
+      });
+      context.commit("setModels", data);
+    },
+    async filterModels(
+      context,
+      { name, cpu, ram,  }
+    ) {
+      //console.log(machine, model, ref, sn, cpu, os, ram, stockage)
+      const { data } = await axios({
+        method: "post",
+        url: server + "api/inventory/model/filter/",
+        data: {
+          name__icontains: name,
+          cpu__icontains: cpu,
+          ram: ram,
+        },
+      }).catch(function(error) {
+        if (error.response.status == 404) {
+          context.commit("setModels", []);
+        }
+      });
+      context.commit("setModels", data);
+    },
     async getModelCount(context) {
       const { data } = await axios({
         method: "get",
@@ -157,13 +234,6 @@ export default new Vuex.Store({
       context.commit("setAviable", count);
     },
 
-    async deleteMchine(context, id) {
-      await axios({
-        method: "delete",
-        url: server + "api/inventory/machine/" + id + "/",
-      });
-      context.dispatch("getMachines");
-    },
     async getOs(context) {
       const { data } = await axios({
         method: "get",

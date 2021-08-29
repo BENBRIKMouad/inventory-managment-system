@@ -29,8 +29,8 @@
       >
         {{ header.title }}
       </th>
-      <tr v-for="(el,index) in machines" :key="el.machine">
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+      <tr v-for="(el, index) in machines" :key="el.machine">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ index }}
         </td>
         <td :class="tableRowBg(el)" class="xl:p-2 lg:p-1 md:p-1">
@@ -189,9 +189,9 @@
                   <option
                     v-for="item in os(select.value)"
                     :key="item.name"
-                    :value="item.name +' '+ item.type"
+                    :value="item.name + ' ' + item.type"
                   >
-                    {{ item.name }} {{item.type}}
+                    {{ item.name }} {{ item.type }}
                   </option>
                 </select>
               </p>
@@ -280,12 +280,9 @@
 
 <script>
 import Swal from "sweetalert2";
-import addMachine from "./addMachine.vue";
 export default {
   name: "DataTable",
-  components: {
-    addMachine,
-  },
+  components: {},
   data() {
     return {
       action: "",
@@ -343,15 +340,13 @@ export default {
       });
       //binding value of select form to machine
       this.selects.forEach((element) => {
-        console.log(element.id)
-        element.value = machine[element.id].name
-        if(element.id=="os")
-        element.value += " "+ machine[element.id].type;
+
+        element.value = machine[element.id].name;
+        if (element.id == "os") element.value += " " + machine[element.id].type;
       });
       this.assigned = machine.assigned;
       this.id = machine.machine;
       //reemove
-    
 
       //show the modal
       this.show = true;
@@ -371,7 +366,7 @@ export default {
       this.show = true;
     },
     exec(action) {
-       let models = this.$store.state.models.results;
+      let models = this.$store.state.models.results;
       let os = this.$store.state.os.results;
       if (action == "Edit") {
         let data = this.inputs.concat(this.selects);
@@ -379,9 +374,11 @@ export default {
           map[obj.id] = obj.value;
           return map;
         }, {});
-        console.log( os)
-        values["model"] = models.find(el => el.name == values["model"]).model;
-        values["os"] =  os.find(el => el.name +" "+el.type == values["os"]).os;
+
+        values["model"] = models.find((el) => el.name == values["model"]).model;
+        values["os"] = os.find(
+          (el) => el.name + " " + el.type == values["os"]
+        ).os;
         values["assigned"] = this.assigned;
         values["id"] = this.id;
         this.$store.dispatch("updateMachines", values);
@@ -392,16 +389,21 @@ export default {
           map[obj.id] = obj.value;
           return map;
         }, {});
-        console.log(values)
-        values["model"] = models.find(el => el.name == values["model"]).model;
-        values["os"] =  os.find(el => el.name +" "+el.type == values["os"]).os;
+
+        values["model"] = models.find((el) => el.name == values["model"]).model;
+        values["os"] = os.find(
+          (el) => el.name + " " + el.type == values["os"]
+        ).os;
         values["assigned"] = this.assigned;
-        console.log(`added : ${values}`);
+
         this.$store.dispatch("addMachine", values);
+       
         this.close_modal();
       }
+      this.$store.dispatch("getAviable");
+      this.$store.dispatch("getMachineCount");
     },
-    destroy(id) {
+    async destroy(id) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -412,9 +414,9 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          console.log(id);
-          this.$store.dispatch("deleteMchine", id);
-          Swal.fire("Deleted!", "This machine has been deleted.", "success");
+        this.$store.dispatch("deleteMchine", id);
+
+        Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
       });
     },
@@ -432,7 +434,7 @@ export default {
     os(val) {
       let os = this.$store.state.os.results;
       os = os.filter(function (el) {
-        return el.name +" "+ el.type != val;
+        return el.name + " " + el.type != val;
       });
       return os;
     },
