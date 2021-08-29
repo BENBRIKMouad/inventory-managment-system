@@ -1,7 +1,7 @@
 <template>
-  <div class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center">
+  <div class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center ">
     <search-bar></search-bar>
-    <dash-board></dash-board>
+    <dash-board></dash-board >
     <div class="flex justify-center items-center">
     <data-table :data="data"></data-table>
     </div>
@@ -26,10 +26,7 @@ export default {
     DataTable,
   },
   mounted () {
-    this.$store.dispatch("getMachines");
-    axios
-      .get('http://127.0.0.1:8000/api/inventory/machine/')
-      .then(response => (this.data=response.data.results))
+  
   }
 };
 </script>

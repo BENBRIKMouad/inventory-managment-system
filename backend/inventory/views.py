@@ -317,6 +317,10 @@ class MachineViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
+        if request.data.get("model"):
+            request.data["model"] = Model.objects.get(model=request.data["model"]).id
+        if request.data.get("os"):
+            request.data["os"] = Os.objects.get(os=request.data["os"]).id
         data = request.data
         serializer = self.serializer_class(data=data)
 

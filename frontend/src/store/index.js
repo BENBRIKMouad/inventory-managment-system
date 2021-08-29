@@ -7,12 +7,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     machines: [],
-    models:[],
-    os:[],
+    models: [],
+    os: [],
     machineCount: "",
     modelsCount: "",
     aviable: "",
-    machine:[]
+    machine: [],
   },
   mutations: {
     setMachines(state, data) {
@@ -27,12 +27,12 @@ export default new Vuex.Store({
     setAviable(state, data) {
       state.aviable = data;
     },
-    setModels(state,data){
-      state.models = data
+    setModels(state, data) {
+      state.models = data;
     },
-    setOs(state,data){
-      state.os = data
-    }
+    setOs(state, data) {
+      state.os = data;
+    },
   },
   actions: {
     async getMachines(context) {
@@ -42,21 +42,43 @@ export default new Vuex.Store({
       });
       context.commit("setMachines", data);
     },
-    async updateMachines(context,{id,name,serial_number,reference,sorage,model,os,assigned}) {
-       await axios({
+    async updateMachines(
+      context,
+      { id, name, serial_number, reference, storage, model, os, assigned }
+    ) {
+      await axios({
         method: "patch",
         data: {
           name: name,
           serial_number: serial_number,
           reference: reference,
-          storage: sorage,
+          storage: storage,
           model: model,
           os: os,
-          assigned:assigned
+          assigned: assigned,
         },
         url: `${server}api/inventory/machine/${id}/`,
       });
       context.dispatch("getMachines");
+    },
+    async addMachine(
+      context,
+      { name, serial_number, reference, storage, model, os, assigned }
+    ) {
+      const { data } = await axios({
+        method: "post",
+        data: {
+          name: name,
+          serial_number: serial_number,
+          reference: reference,
+          storage: storage,
+          model: model,
+          os: os,
+          assigned: assigned,
+        },
+        url: `${server}api/inventory/machine/`,
+      });
+       context.dispatch("getMachines");
     },
     async searchMachines(context, q) {
       const { data } = await axios({
@@ -75,7 +97,7 @@ export default new Vuex.Store({
 
     async filterMachines(
       context,
-      {  model, ref, sn, cpu, os, ram, stockage,machine}
+      { model, ref, sn, cpu, os, ram, stockage, machine }
     ) {
       //console.log(machine, model, ref, sn, cpu, os, ram, stockage)
       const { data } = await axios({
@@ -89,8 +111,8 @@ export default new Vuex.Store({
           model__cpu__icontains: cpu,
           os__name__icontains: os,
           model__ram: ram,
-          storage:stockage,
-          assigned:""
+          storage: stockage,
+          assigned: "",
         },
       }).catch(function(error) {
         if (error.response.status == 404) {
@@ -107,12 +129,12 @@ export default new Vuex.Store({
       });
       context.commit("setMachineCount", data.count);
     },
-    async getModels(context){
+    async getModels(context) {
       const { data } = await axios({
-        method:"get",
-        url:server + "api/inventory/model/"
-      })
-      context.commit("setModels",data)
+        method: "get",
+        url: server + "api/inventory/model/",
+      });
+      context.commit("setModels", data);
     },
 
     async getModelCount(context) {
@@ -128,28 +150,27 @@ export default new Vuex.Store({
         method: "get",
         url: server + "api/inventory/model/",
       });
-      let count =0
-      data.results.forEach(element => {
-        count+= element.c_available
+      let count = 0;
+      data.results.forEach((element) => {
+        count += element.c_available;
       });
       context.commit("setAviable", count);
     },
-    
-    async deleteMchine(context,id) {
-       await axios({
+
+    async deleteMchine(context, id) {
+      await axios({
         method: "delete",
-        url: server + "api/inventory/machine/"+id+"/",
+        url: server + "api/inventory/machine/" + id + "/",
       });
       context.dispatch("getMachines");
     },
-    async getOs(context){
+    async getOs(context) {
       const { data } = await axios({
-        method:"get",
-        url:server + "api/inventory/os/"
-      })
-      context.commit("setOs",data)
+        method: "get",
+        url: server + "api/inventory/os/",
+      });
+      context.commit("setOs", data);
     },
-    
   },
   modules: {},
 });
