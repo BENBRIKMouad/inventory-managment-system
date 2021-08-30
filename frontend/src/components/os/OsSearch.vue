@@ -72,20 +72,19 @@
 
 <script>
 export default {
-  name: "MachineSearch",
+  name: "OsSearch",
   data() {
     return {
       searchq: "",
       filterfields: [
-        { id: "name", placeholder: "Model", value: "", type: "text" },
-        { id: "cpu", placeholder: "CPU", value: "" , type: "text"},
-        { id: "ram", placeholder: "RAM", value: "" , type: "number"},
+        { id: "name", placeholder: "nom", value: "", type: "text" },
+        { id: "type", placeholder: "type de l'os", value: "" , type: "text"},
       ],
     };
   },
   methods: {
     search() {
-      this.$store.dispatch("searchModels", this.searchq);
+      this.$store.dispatch("searchOs", this.searchq);
     },
     filter() {
        let filter = this.filterfields.reduce(function (map, obj) {
@@ -93,7 +92,7 @@ export default {
           return map;
         }, {});
       console.log(filter);
-      this.$store.dispatch("filterModels", filter);
+      this.$store.dispatch("filterOs", filter);
     },
   },
   computed: {},

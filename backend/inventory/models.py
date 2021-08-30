@@ -28,6 +28,10 @@ class Os(models.Model):
     def __str__(self):
         return self.name + " " + self.type
 
+    def save(self, *args, **kwargs):
+        self.os = uuid.uuid4().hex.__str__()
+        super(Os, self).save(*args, **kwargs)
+
 
 class Machine(models.Model):
     machine = models.CharField(max_length=255, blank=True)

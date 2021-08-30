@@ -29,15 +29,18 @@
       </button>
     </div>
     <div class="w-full pb-2">
-        <button class="flex items-center w-full hover:bg-blue-50 lg:rounded-2xl rounded-lg pl-3 pr-3 p-1 hover:shadow-sm transition-all duration-200">
+        <div class="flex items-center w-full  lg:rounded-2xl rounded-lg transition-all duration-200">
             <font-awesome-icon icon="user" class="w-12 h-12 rounded-2xl" />
             <div class="ml-4">
-              <p class="text-sm font-bold leading-tight lg:block hidden antialiased">user name</p>
+              <p class="text-sm font-bold leading-tight lg:block hidden antialiased"> {{user.username}} </p>
             </div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 ml-auto transition-all duration-200 text-blue-800 bg-gray-200 p-2 rounded-2xl cursor-pointer hover:shadow-inner hover:bg-gray-300" @click="logout" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-        </button>
+
+              
+        </div>
       </div>
   </div>
 </template>
@@ -50,10 +53,22 @@ export default {
       tabs: [
         { icon: "laptop", title: "machine",path:"Main" },
         { icon: "layer-group", title: "model",path:"Model" },
-        { icon: "laptop-code", title: "os",path:"" },
+        { icon: "laptop-code", title: "os",path:"Os" },
       ],
     };
-  },
+  },computed:{
+    user(){
+      return this.$store.state.user
+    }
+  },methods:{
+    logout(){
+      this.$store.commit("updateStorage",{ access:null, refresh:null})
+      localStorage.clear() 
+      this.$router.push({ name: 'Login' })
+      console.log('log out')
+    }
+  }
+
 };
 </script>
 

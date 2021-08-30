@@ -29,7 +29,7 @@
       >
         {{ header.title }}
       </th>
-      <tr v-for="(el,index) in models()" :key="el.machine">
+      <tr v-for="(el,index) in os()" :key="el.machine">
         <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ index }}
         </td>
@@ -37,14 +37,7 @@
           {{ el.name }}
         </td>
         <td :class="border" class="sm:table-cell hidden">
-          {{ el.ram }}
-        </td>
-        <td :class="border">
-          {{ el.cpu }}
-        </td>
-        <td :class="border">{{ el.count }}</td>
-        <td :class="border">
-          {{ el.c_available}}
+          {{ el.type }}
         </td>
         <td :class="border">
           <button @click="edit(el)">
@@ -54,7 +47,7 @@
             />
           </button>
 
-          <button @click="destroy(el.model)">
+          <button @click="destroy(el.os)">
             <font-awesome-icon
               icon="times-circle"
               class="hover:shadow-lg transition-all text-red-600 text-lg m-2"
@@ -120,78 +113,6 @@
               </p>
             </div>
           </div>
-
-          <div class="grid lg:grid-cols-2 gap-6 mt-5">
-            <div
-              v-for="select in selects"
-              :key="select.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
-              "
-            >
-              <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
-                <p>
-                  <label for="name" class="bg-white text-gray-600 px-1"
-                    >{{ select.label }} *</label
-                  >
-                </p>
-              </div>
-              <p>
-                <select
-                  v-if="select.id == 'model'"
-                  v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
-                >
-                  <option :value="select.value">{{ select.value }}</option>
-                  <option
-                    v-for="model in models(select.value)"
-                    :key="model.name"
-                    :value="model.name"
-                  >
-                    {{ model.name }}
-                  </option>
-                </select>
-                <select
-                  v-else
-                  v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
-                >
-                  <option :value="select.value">{{ select.value }}</option>
-                  <option
-                    v-for="item in os(select.value)"
-                    :key="item.name"
-                    :value="item.name +' '+ item.type"
-                  >
-                    {{ item.name }} {{item.type}}
-                  </option>
-                </select>
-              </p>
-            </div>
-
- 
-          </div>
           <div class="mt-6 pt-3">
             <button
               @click="exec(action)"
@@ -239,7 +160,7 @@
 <script>
 import Swal from "sweetalert2";
 export default {
-  name: "DataTable",
+  name: "OsTable",
   components: {
    
   },
@@ -254,17 +175,13 @@ export default {
       border: "border border-gray-500 p-1 text-sm",
       headers: [
         { title: "#", class: "" },
-        { title: "Model", class: "" },
-        { title: "RAM", class: "" },
-        { title: "Processeur", class: "" },
-        { title: "nombre", class: "" },
-        { title: "aviable", class: "" },
+        { title: "nom de l'os", class: "" },
+        { title: "type de l'os", class: "" },
         { title: "actions" },
       ],
       inputs: [
-        { id: "name", label: "nom du model", value: "", type: "text" },
-        { id: "cpu", label: "cpu", value: "", type: "text" },
-        { id: "ram", label: "ram", value: "", type: "number" },
+        { id: "name", label: "nom de l'os", value: "", type: "text" },
+        { id: "type", label: "type de l'os", value: "", type: "text" },
       ],
       selects: [
        
@@ -272,17 +189,17 @@ export default {
     };
   },
   methods: {
-    edit(model) {
+    edit(os) {
       this.action = "Edit";
       //binding data
 
       //binding value of input form to machine
       this.inputs.forEach((element) => {
-        element.value = model[element.id];
+        element.value = os[element.id];
         //console.log(element.id+" "+element.value)
       });
       //binding value of select form to machine
-      this.id = model.model;
+      this.id = os.os;
       //reemove
     
 
@@ -303,6 +220,7 @@ export default {
       //show the modal
       this.show = true;
     },
+
     exec(action) {
       if (action == "Edit") {
         let values = this.inputs.reduce(function (map, obj) {
@@ -310,7 +228,7 @@ export default {
           return map;
         }, {});
         values["id"] = this.id;
-        this.$store.dispatch("updateModel", values);
+        this.$store.dispatch("updateOs", values);
         this.close_modal();
       } else {
         let values =  this.inputs.reduce(function (map, obj) {
@@ -318,7 +236,7 @@ export default {
           return map;
         }, {});
 
-        this.$store.dispatch("addModel", values);
+        this.$store.dispatch("addOs", values);
         this.close_modal();
       }
     },
@@ -334,14 +252,16 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
 
-          this.$store.dispatch("deleteModel", id);
+          this.$store.dispatch("deleteOs", id);
           Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
       });
     },
+
     close_modal() {
       this.show = false;
     },
+
     models(val = null) {
       let models = this.$store.state.models.results;
       if (val)
@@ -350,16 +270,16 @@ export default {
         });
       return models;
     },
-    os(val) {
+
+    os() {
       let os = this.$store.state.os.results;
-      os = os.filter(function (el) {
-        return el.name +" "+ el.type != val;
-      });
       return os;
     },
   },
   mounted() {
+    this.$store.dispatch("getMachines");
     this.$store.dispatch("getModels");
+    this.$store.dispatch("getOs");
   },
   computed: {
     machines() {

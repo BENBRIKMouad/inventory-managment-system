@@ -2,15 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="92412ddf-eb88-4ee2-a45e-201bfae8ca9d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/DataTable.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/MainPanel.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/SearchBar.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cid/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cid/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/public/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/public/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/DashBoard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/DashBoard.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/components/SidePanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/SidePanel.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/components/addMachine.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/model/ModelSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/model/ModelSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/model/ModelTable.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/model/ModelTable.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Main.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Main.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/store/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Machine.vue" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/views/Model.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Model.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +58,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RunManager">
@@ -113,6 +117,11 @@
       <workItem from="1630167956815" duration="1251000" />
       <workItem from="1630239371961" duration="1318000" />
       <workItem from="1630244538757" duration="4240000" />
+      <workItem from="1630319526406" duration="2298000" />
+      <workItem from="1630331989463" duration="346000" />
+      <workItem from="1630332661864" duration="2033000" />
+      <workItem from="1630348865643" duration="1217000" />
+      <workItem from="1630354314467" duration="1308000" />
     </task>
     <servers />
   </component>
