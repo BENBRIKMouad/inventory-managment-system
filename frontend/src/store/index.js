@@ -1,16 +1,18 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios';
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
 let server = "http://127.0.0.1:8000/";
-Vue.use(Vuex)
+Vue.use(Vuex);
 import Swal from "sweetalert2";
-const defaultHeaders ={
-          "Accept-Language": "fr-fr",
-}
+const defaultHeaders = {
+  "Accept-Language": "fr-fr",
+};
 
 axios.defaults.headers.common["Accept-Language"] = "fr-fr";
 if (localStorage.getItem("token"))
-  axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token")}` ;
+  axios.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer ${localStorage.getItem("token")}`;
 export default new Vuex.Store({
   state: {
     machines: [],
@@ -23,6 +25,8 @@ export default new Vuex.Store({
     user: {},
     accessToken: null,
     refreshToken: null,
+    employee: "",
+    software: "",
   },
   getters: {
     loggedIn(state) {
@@ -56,15 +60,22 @@ export default new Vuex.Store({
     setUser(state, data) {
       state.user = data;
     },
+    setEmployee(state, data) {
+      state.employee = data;
+    },
+    setSoftware(state, data) {
+      state.Software = data;
+    },
     updateStorage(state, { access, refresh }) {
       state.accessToken = access;
       state.refreshToken = refresh;
-      localStorage.setItem("token", access); 
-      localStorage.setItem("refresh", refresh); 
+      localStorage.setItem("token", access);
+      localStorage.setItem("refresh", refresh);
     },
     refreshStorage(state, { access }) {
       state.accessToken = access;
-      localStorage.setItem("token", access);  
+      localStorage.setItem("token", access);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
     },
   },
   actions: {
@@ -85,15 +96,19 @@ export default new Vuex.Store({
               refresh: response.data.refresh_token,
             });
             context.commit("setUser", response.data.user);
-            localStorage.setItem("user", JSON.stringify(response.data.user)); 
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+            axios.defaults.headers.common[
+              "Authorization"
+            ] = `Bearer ${response.data.access_token}`;
             resolve();
           })
           .catch((error) => {
             let err = "";
-            Object.entries(error.response.data).forEach((val) => {
-              const [key, value] = val;
-              err += `${key} : ${value}<br>`;
-            });
+            if (error.response)
+              Object.entries(error.response.data).forEach((val) => {
+                const [key, value] = val;
+                err += `${key} : ${value}<br>`;
+              });
 
             Swal.fire({
               title: err,
@@ -106,7 +121,7 @@ export default new Vuex.Store({
       });
     },
     async verifyToken(context, { token }) {
-      console.log("token"+token)
+      console.log("token" + token);
       return await new Promise((resolve, reject) => {
         axios({
           method: "post",
@@ -133,7 +148,7 @@ export default new Vuex.Store({
           },
         })
           .then((response) => {
-            context.commit("updateStorage", {
+            context.commit("refreshStorage", {
               access: response.data.access,
             });
             resolve();
@@ -163,11 +178,22 @@ export default new Vuex.Store({
         });
       });
       context.commit("setMachines", data);
+      context.dispatch("getAviable");
     },
 
     async updateMachines(
       context,
-      { id, name, serial_number, reference, storage, model, os, assigned }
+      {
+        id,
+        name,
+        serial_number,
+        reference,
+        storage,
+        model,
+        os,
+        assigned,
+        employee,
+      }
     ) {
       await axios({
         method: "patch",
@@ -179,6 +205,7 @@ export default new Vuex.Store({
           model: model,
           os: os,
           assigned: assigned,
+          employee: employee,
         },
         url: `${server}api/inventory/machine/${id}/`,
       }).catch(function(error) {
@@ -195,12 +222,11 @@ export default new Vuex.Store({
         });
       });
       context.dispatch("getMachines");
-      context.dispatch("getAviable");
     },
 
     async addMachine(
       context,
-      { name, serial_number, reference, storage, model, os, assigned }
+      { name, serial_number, reference, storage, model, os, assigned, employee }
     ) {
       const { data } = await axios({
         method: "post",
@@ -212,6 +238,7 @@ export default new Vuex.Store({
           model: model,
           os: os,
           assigned: assigned,
+          employee: employee,
         },
         url: `${server}api/inventory/machine/`,
       }).catch(function(error) {
@@ -311,6 +338,19 @@ export default new Vuex.Store({
       });
 
       context.commit("setMachineCount", data.count);
+    },
+
+    //get number of free machines
+    async getAviable(context) {
+      const { data } = await axios({
+        method: "get",
+        url: server + "api/inventory/model/",
+      });
+      let count = 0;
+      data.results.forEach((element) => {
+        count += element.c_available;
+      });
+      context.commit("setAviable", count);
     },
 
     //models
@@ -445,19 +485,6 @@ export default new Vuex.Store({
         url: server + "api/inventory/model/",
       });
       context.commit("setModelCount", data.count);
-    },
-
-    //get number of free machines
-    async getAviable(context) {
-      const { data } = await axios({
-        method: "get",
-        url: server + "api/inventory/model/",
-      });
-      let count = 0;
-      data.results.forEach((element) => {
-        count += element.c_available;
-      });
-      context.commit("setAviable", count);
     },
 
     //os
@@ -595,6 +622,155 @@ export default new Vuex.Store({
         }
       });
       context.commit("setOs", data);
+    },
+
+    //employee
+
+    async getEmployee(context) {
+      const { data } = await axios({
+        method: "get",
+        url: server + "api/inventory/employee/",
+      }).catch(function(error) {
+        let err = "";
+        Object.entries(error.response.data).forEach((val) => {
+          const [key, value] = val;
+          err += `${key} : ${value}<br>`;
+        });
+        Swal.fire({
+          title: err,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "ok",
+        });
+      });
+      context.commit("setEmployee", data);
+    },
+
+    async addEmployee(context, { email, first_name, last_name, identifier }) {
+      await axios({
+        method: "post",
+        data: {
+          email: email,
+          first_name: first_name,
+          lst_name: last_name,
+          identifier: identifier,
+        },
+        url: `${server}api/inventory/employee/`,
+      }).catch(function(error) {
+        if (error.response.status == 400) {
+          let err = "";
+          Object.entries(error.response.data).forEach((val) => {
+            const [key, value] = val;
+            err += `${key} : ${value}<br>`;
+          });
+          err = err.replace("last_name", "nom");
+          err = err.replace("first_name", "prenom");
+          context.commit("setEmployee", []);
+          Swal.fire({
+            title: err,
+            icon: "error",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "ok",
+          });
+        }
+      });
+      context.dispatch("getEmployee");
+    },
+
+    async updateEmployee(
+      context,
+      { email, first_name, last_name, identifier }
+    ) {
+      await axios({
+        method: "patch",
+        data: {
+          email: email,
+          first_name: first_name,
+          lst_name: last_name,
+          identifier: identifier,
+        },
+        url: `${server}api/inventory/employee/${id}/`,
+      }).catch(function(error) {
+        let err = "";
+        Object.entries(error.response.data).forEach((val) => {
+          const [key, value] = val;
+          err += `${key} : ${value}<br>`;
+        });
+        Swal.fire({
+          title: err,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "ok",
+        });
+      });
+      context.dispatch("getEmployee");
+    },
+
+    async deleteEmployee(context, id) {
+      await axios({
+        method: "delete",
+        url: server + "api/inventory/employee/" + id + "/",
+      }).catch(function(error) {
+        let err = "";
+        Object.entries(error.response.data).forEach((val) => {
+          const [key, value] = val;
+          err += `${key} : ${value}<br>`;
+        });
+        Swal.fire({
+          title: err,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "ok",
+        });
+      });
+      context.dispatch("getEmployee");
+    },
+
+    async searchEmployee(context, q) {
+      const { data } = await axios({
+        method: "post",
+        url: server + "api/inventory/employee/search/",
+        data: {
+          query: q,
+        },
+      }).catch(function(error) {
+        if (error.response.status == 404) {
+          context.commit("setEmployee", []);
+          Swal.fire({
+            title: "aucun résultat pour votre recherche",
+            icon: "question",
+            showConfirmButton: false,
+          });
+        }
+      });
+      context.commit("setEmployee", data);
+    },
+
+    async filterEmployee(
+      context,
+      { email, first_name, last_name, identifier }
+    ) {
+      //console.log(machine, model, ref, sn, cpu, os, ram, stockage)
+      const { data } = await axios({
+        method: "post",
+        url: server + "api/inventory/employee/filter/",
+        data: {
+          email__icontains: email,
+          first_name__icontains: first_name,
+          last_name__icontains: last_name,
+          identifier__icontains: identifier,
+        },
+      }).catch(function(error) {
+        if (error.response.status == 404) {
+          context.commit("setEmployee", []);
+          Swal.fire({
+            title: "aucun résultat pour votre recherche",
+            icon: "question",
+            showConfirmButton: false,
+          });
+        }
+      });
+      context.commit("setEmployee", data);
     },
   },
   modules: {},

@@ -1,6 +1,6 @@
 <template>
-  <div class="table-auto">
-    <div class="flex justify-end">
+  <div >
+    <div class="flex justify-start">
       <button
         @click="add()"
         class="
@@ -20,7 +20,7 @@
       </button>
     </div>
 
-    <table>
+    <table class="container">
       <th
         v-for="header in headers"
         :key="header.title"
@@ -36,7 +36,7 @@
         <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.name }}
         </td>
-        <td :class="border" class="sm:table-cell hidden">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.ram }}
         </td>
         <td :class="border">
@@ -66,17 +66,7 @@
 
     <div
       v-if="show"
-      class="
-        bg-gray-500
-        absolute
-        top-0
-        left-0
-        bottom-0
-        right-0
-        h-full
-        w-full
-        bg-opacity-60
-      "
+      class=" bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60"
     >
       <div class="flex justify-center items-center h-screen">
         <div class="bg-white rounded-xl p-12 shadow-2xl" style="width: 75%">
@@ -84,15 +74,7 @@
             <div
               v-for="input in inputs"
               :key="input.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
-              "
+              class=" border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1"
             >
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
                 <p>
@@ -107,15 +89,7 @@
                   :type="input.type"
                   autocomplete="false"
                   tabindex="0"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
                 />
               </p>
             </div>
@@ -125,15 +99,7 @@
             <div
               v-for="select in selects"
               :key="select.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
-              "
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1"
             >
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
                 <p>
@@ -146,15 +112,7 @@
                 <select
                   v-if="select.id == 'model'"
                   v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
                 >
                   <option :value="select.value">{{ select.value }}</option>
                   <option
@@ -168,15 +126,7 @@
                 <select
                   v-else
                   v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
                 >
                   <option :value="select.value">{{ select.value }}</option>
                   <option
@@ -195,37 +145,13 @@
           <div class="mt-6 pt-3">
             <button
               @click="exec(action)"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-blue-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-blue-700
-                transition-all
-                duration-200
-                m-4
-              "
+              class=" rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-700 transition-all duration-200 m-4"
             >
               {{ action }}
             </button>
             <button
               @click="close_modal()"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-red-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-red-700
-                transition-all
-                duration-200
-                m-4
-              "
+              class=" rounded text-gray-100 px-6 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-4"
             >
               cancel
             </button>

@@ -1,5 +1,51 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
+
 from .models import *
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name')
+
+
+class SoftwareSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Software
+        fields = ('software', 'name', 'editor', 'version')
+
+
+class FilterSoftwareSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+    name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='name')
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    software = SoftwareSerializer(many=True, required=False)
+
+    class Meta:
+        model = Employee
+        fields = ('employee', 'email', 'first_name', 'last_name', 'identifier', 'software')
+
+
+class FilterEmployeeSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
+    email__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='name')
+    first_name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    last_name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    identifier__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    software__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
 
 
 class ModelSerializer(serializers.ModelSerializer):
@@ -13,11 +59,11 @@ class ModelSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_c_available(obj):
-        return Machine.objects.filter(model=obj, assigned=False).count()
+        return Machine.objects.filter(model=obj, employee=None).count()
 
     @staticmethod
     def get_available(obj):
-        machines = Machine.objects.filter(model=obj, assigned=False)
+        machines = Machine.objects.filter(model=obj, employee=None)
         return RequestMachineSerializer(machines, many=True).data
 
     class Meta:
@@ -59,17 +105,18 @@ class FilterOsSerializer(serializers.Serializer):
 class ResponseMachineSerializer(serializers.ModelSerializer):
     model = ModelSerializer(many=False)
     os = OsSerializer(many=False)
+    employee = EmployeeSerializer(many=False, required=False)
 
     class Meta:
         model = Machine
-        fields = ['machine', 'name', 'serial_number', 'reference', 'storage', 'assigned', 'model', 'os', 'assigned']
+        fields = ['machine', 'name', 'serial_number', 'reference', 'storage', 'model', 'os',
+                  'employee']
 
 
 class RequestMachineSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Machine
-        fields = ['machine', 'name', 'serial_number', 'reference', 'storage', 'assigned', 'model', 'os']
+        fields = ['machine', 'name', 'serial_number', 'reference', 'storage', 'model', 'os', 'employee']
 
 
 class FilterMachineSerializer(serializers.Serializer):
@@ -85,7 +132,7 @@ class FilterMachineSerializer(serializers.Serializer):
     storage = serializers.IntegerField(required=False)
     storage__gte = serializers.IntegerField(required=False, label='storage more then')
     storage__lte = serializers.IntegerField(required=False, label='storage less then')
-    assigned = serializers.BooleanField(required=False)
+    #assigned = serializers.BooleanField(required=False)
     model__name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='Model name')
     model__cpu__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='Model_cpu')
     model__ram = serializers.IntegerField(required=False)

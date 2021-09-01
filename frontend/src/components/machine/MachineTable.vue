@@ -1,6 +1,6 @@
 <template>
-  <div class="table-auto">
-    <div class="flex justify-end">
+  <div>
+    <div class="flex justify-start">
       <button
         @click="add()"
         class="
@@ -20,18 +20,18 @@
       </button>
     </div>
 
-    <table>
+    <table class="mx-auto container">
       <th
         v-for="header in headers"
         :key="header.title"
         :class="header.class + ' ' + border"
-        class="lg:p-7 p-1 text-center xl:text-md text-sm font-semibold"
+        class="lg:p-2 p-1 text-center xl:text-md text-sm font-semibold"
       >
         {{ header.title }}
       </th>
       <tr v-for="(el, index) in machines" :key="el.machine">
         <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
-          {{ index }}
+          {{ index + 1 }}
         </td>
         <td :class="tableRowBg(el)" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.name }}
@@ -53,6 +53,22 @@
         <td :class="border" class="lg:p-2 xl:table-cell hidden">
           {{ el.os.name }} {{ el.os.type }}
         </td>
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
+          <p v-if="el.employee">
+            {{ el.employee.last_name }} {{ el.employee.first_name }}
+          </p>
+          <p v-else>
+            - - -
+          </p>
+        </td>
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
+          <p v-if="el.employee">
+            {{ el.employee.identifier }}
+          </p>
+          <p v-else>
+            - - -
+          </p>
+        </td>
         <td :class="border">
           <button @click="edit(el)">
             <font-awesome-icon
@@ -73,16 +89,7 @@
 
     <div
       v-if="show"
-      class="
-        bg-gray-500
-        absolute
-        top-0
-        left-0
-        bottom-0
-        right-0
-        h-full
-        w-full
-        bg-opacity-60
+      class="bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60
       "
     >
       <div class="flex justify-center items-center h-screen">
@@ -91,14 +98,7 @@
             <div
               v-for="input in inputs"
               :key="input.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1
               "
             >
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
@@ -114,14 +114,7 @@
                   :type="input.type"
                   autocomplete="false"
                   tabindex="0"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full
                   "
                 />
               </p>
@@ -132,14 +125,7 @@
             <div
               v-for="select in selects"
               :key="select.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1
               "
             >
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
@@ -173,7 +159,7 @@
                   </option>
                 </select>
                 <select
-                  v-else
+                  v-else-if="select.id == 'os'"
                   v-model="select.value"
                   class="
                     py-1
@@ -194,29 +180,9 @@
                     {{ item.name }} {{ item.type }}
                   </option>
                 </select>
-              </p>
-            </div>
-
-            <div
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
-              "
-            >
-              <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
-                <p>
-                  <label for="name" class="bg-white text-gray-600 px-1"
-                    >utlisé *</label
-                  >
-                </p>
-              </div>
-              <p>
                 <select
+                  v-else
+                  v-model="select.value"
                   class="
                     py-1
                     px-1
@@ -226,10 +192,20 @@
                     h-full
                     w-full
                   "
-                  v-model="assigned"
                 >
-                  <option value="false">non</option>
-                  <option value="true">oui</option>
+                  <option :value="null">
+                    -----
+                  </option>
+                  <option v-if="select.value" :value="select.value">{{
+                    select.value
+                  }}</option>
+                  <option
+                    v-for="item in employee(select.value)"
+                    :key="item.last_name"
+                    :value="item.last_name + ' ' + item.first_name"
+                  >
+                    {{ item.last_name }} {{ item.first_name }}
+                  </option>
                 </select>
               </p>
             </div>
@@ -302,6 +278,8 @@ export default {
         { title: "Stockage", class: "" },
         { title: "Processeur", class: "" },
         { title: "OS", class: "xl:table-cell hidden" },
+        { title: "utilisateur", class: "" },
+        { title: "matricule", class: "" },
         { title: "actions" },
       ],
       inputs: [
@@ -318,12 +296,13 @@ export default {
       selects: [
         { id: "model", label: "model", value: "" },
         { id: "os", label: "os", value: "" },
+        { id: "employee", label: "utilisateur", value: "" },
       ],
     };
   },
   methods: {
     tableRowBg(el) {
-      if (el.assigned) {
+      if (el.employee) {
         return this.border + " " + "bg-red-100";
       } else {
         return this.border + " " + "bg-green-100";
@@ -340,9 +319,18 @@ export default {
       });
       //binding value of select form to machine
       this.selects.forEach((element) => {
-
-        element.value = machine[element.id].name;
-        if (element.id == "os") element.value += " " + machine[element.id].type;
+        if (machine[element.id] != null) {
+          element.value = machine[element.id].name;
+          if (element.id == "os")
+            element.value += " " + machine[element.id].type;
+          if (element.id == "employee")
+            element.value =
+              machine[element.id].last_name +
+              " " +
+              machine[element.id].first_name;
+        } else {
+          element.value = null;
+        }
       });
       this.assigned = machine.assigned;
       this.id = machine.machine;
@@ -367,43 +355,37 @@ export default {
     },
     exec(action) {
       let models = this.$store.state.models.results;
-      let os = this.$store.state.os.results;
-      if (action == "Edit") {
-        let data = this.inputs.concat(this.selects);
-        let values = data.reduce(function (map, obj) {
-          map[obj.id] = obj.value;
-          return map;
-        }, {});
+      let oss = this.$store.state.os.results;
+      let employees = this.$store.state.employee.results;
+      
+      let data = this.inputs.concat(this.selects);
+      let values = data.reduce(function(map, obj) {
+        map[obj.id] = obj.value;
+        return map;
+      }, {});
 
-        values["model"] = models.find((el) => el.name == values["model"]).model;
-        values["os"] = os.find(
-          (el) => el.name + " " + el.type == values["os"]
-        ).os;
-        values["assigned"] = this.assigned;
+      let model = models.find((el) => el.name == values["model"]);
+      let employee = employees.find((el) => el.last_name + " " + el.first_name == values["employee"]);
+      let os = oss.find((el) => el.name + " " + el.type == values["os"]);
+
+      values["model"] = model.model;
+      values["os"] = os.os;
+      values["assigned"] = this.assigned;
+
+      if (employee) values["employee"] = employee.employee;
+      else values["employee"] = null;
+
+      if (action == "Edit") {
         values["id"] = this.id;
         this.$store.dispatch("updateMachines", values);
-        this.close_modal();
       } else {
-        let data = this.inputs.concat(this.selects);
-        let values = data.reduce(function (map, obj) {
-          map[obj.id] = obj.value;
-          return map;
-        }, {});
-
-        values["model"] = models.find((el) => el.name == values["model"]).model;
-        values["os"] = os.find(
-          (el) => el.name + " " + el.type == values["os"]
-        ).os;
-        values["assigned"] = this.assigned;
-
         this.$store.dispatch("addMachine", values);
-       
-        this.close_modal();
       }
       this.$store.dispatch("getAviable");
       this.$store.dispatch("getMachineCount");
+      this.close_modal();
     },
-    async destroy(id) {
+    destroy(id) {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -414,9 +396,9 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-        this.$store.dispatch("deleteMchine", id);
+          this.$store.dispatch("deleteMchine", id);
 
-        Swal.fire("Deleted!", "This machine has been deleted.", "success");
+          Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
       });
     },
@@ -426,23 +408,31 @@ export default {
     models(val = null) {
       let models = this.$store.state.models.results;
       if (val)
-        models = models.filter(function (el) {
+        models = models.filter(function(el) {
           return el.name != val;
         });
       return models;
     },
     os(val) {
       let os = this.$store.state.os.results;
-      os = os.filter(function (el) {
+      os = os.filter(function(el) {
         return el.name + " " + el.type != val;
       });
       return os;
+    },
+    employee(val) {
+      let employee = this.$store.state.employee.results;
+      employee = employee.filter(function(employee) {
+        return employee.last_name + " " + employee.first_name != val;
+      });
+      return employee;
     },
   },
   mounted() {
     this.$store.dispatch("getMachines");
     this.$store.dispatch("getModels");
     this.$store.dispatch("getOs");
+    this.$store.dispatch("getEmployee");
   },
   computed: {
     machines() {

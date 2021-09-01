@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from django.db.models import Q
 from .pagination import *
 from rest_framework.reverse import reverse
-
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 # class MachineList(mixins.ListModelMixin,
@@ -71,6 +71,7 @@ class ModelViewSet(viewsets.ViewSet):
           [ref]: https://docs.djangoproject.com/en/3.2/topics/db/queries/#field-lookups
 
        """
+    permission_classes = [IsAuthenticated]
     serializer_class = ModelSerializer
     queryset = Model.objects.all()
     lookup_field = "model"
@@ -183,6 +184,7 @@ class OsViewset(viewsets.ViewSet):
           [ref]: https://docs.djangoproject.com/en/3.2/topics/db/queries/#field-lookups
 
        """
+    permission_classes = [IsAuthenticated]
     serializer_class = OsSerializer
     queryset = Os.objects.all()
     lookup_field = "os"
@@ -299,6 +301,7 @@ class MachineViewSet(viewsets.ViewSet):
 
     """
 
+    permission_classes = [IsAuthenticated]
     serializer_class = RequestMachineSerializer
     queryset = Machine.objects.all().prefetch_related()
     lookup_field = "machine"
@@ -321,6 +324,8 @@ class MachineViewSet(viewsets.ViewSet):
             request.data["model"] = Model.objects.get(model=request.data["model"]).id
         if request.data.get("os"):
             request.data["os"] = Os.objects.get(os=request.data["os"]).id
+        if request.data.get("employee"):
+            request.data["employee"] = Employee.objects.get(employee=request.data["employee"]).id
         data = request.data
         serializer = self.serializer_class(data=data)
 
@@ -353,6 +358,8 @@ class MachineViewSet(viewsets.ViewSet):
             request.data["model"] = Model.objects.get(model=request.data["model"]).id
         if request.data.get("os"):
             request.data["os"] = Os.objects.get(os=request.data["os"]).id
+        if request.data.get("employee"):
+            request.data["employee"] = Employee.objects.get(employee=request.data["employee"]).id
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -408,6 +415,237 @@ class MachineViewSet(viewsets.ViewSet):
         )
 
         serializer_class = ResponseMachineSerializer
+        serializer = serializer_class(model, many=True)
+
+        if model.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+
+        return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+
+class SoftwareViewSet(viewsets.ViewSet):
+    """
+       Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **Machines**
+
+       Filter accept GET AND POST method and support queries that supported by django model filter method
+
+       for more details about django model filter please [see here][ref]
+
+       [ref]: https://docs.djangoproject.com/en/3.2/topics/db/queries/#field-lookups
+
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = SoftwareSerializer
+    queryset = Software.objects.all().prefetch_related()
+    lookup_field = "software"
+    pagination_class = MachineLimitOffsetPagination
+    paginator = MachineLimitOffsetPagination()
+
+    def list(self, request):
+        serializer = self.serializer_class(Software.objects.all().prefetch_related(), many=True)
+        for obj in serializer.data:
+            obj['url'] = reverse('software-detail', args=[obj[self.lookup_field]], request=request)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, software=None):
+        software = get_object_or_404(self.queryset, software=software)
+        serializer = self.serializer_class(software)
+        return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+    def update(self, request, software=None):
+        instance = self.queryset.get(software=software)
+        serializer = self.serializer_class(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def partial_update(self, request, software=None):
+        instance = self.queryset.get(software=software)
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def destroy(self, request, software=None):
+        instance = self.queryset.get(software=software)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['get', 'post'], detail=False)
+    def filter(self, request):
+        self.serializer_class = FilterSoftwareSerializer
+        serialized_instance = SoftwareSerializer(Software.objects.all()[0]).data
+        serializer_fields = [k for k, v in serialized_instance.items()]
+        data = {}
+
+        if request.method == 'POST':
+            if type(request.data) == 'dict':
+                data = request.data.dict()
+            else:
+                data = request.data
+        if request.method == 'GET':
+            data = request.query_params.dict()
+
+        data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
+        data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
+
+        software = self.queryset.filter(**data)
+        serializer = SoftwareSerializer(software, many=True)
+
+        if software.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+
+        return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+    @action(methods=['get', 'post'], detail=False)
+    def search(self, request):
+        self.serializer_class = QuerySerializer
+        query = request.data.get('query', '')
+
+        if request.method == 'GET':
+            query = request.query_params.get('q', '')
+
+        software = self.queryset.filter(
+            Q(name__icontains=query) | Q(editor__icontains=query) | Q(version__icontains=query)
+        )
+        serializer_class = SoftwareSerializer
+        serializer = serializer_class(software, many=True)
+        if software.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+
+        return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+
+class EmployeeViewset(viewsets.ViewSet):
+    """
+          Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **OS**
+
+          Filter accept GET AND POST method and support queries that supported by django model filter method
+
+          for more details about django model filter please [see here][ref]
+
+          [ref]: https://docs.djangoproject.com/en/3.2/topics/db/queries/#field-lookups
+
+       """
+    permission_classes = [IsAuthenticated]
+    serializer_class = EmployeeSerializer
+    queryset = Employee.objects.all()
+    lookup_field = "employee"
+    pagination_class = OsLimitOffsetPagination
+    paginator = OsLimitOffsetPagination()
+
+    def list(self, request):
+        serializer = self.serializer_class(Employee.objects.all().order_by("first_name"), many=True)
+        for obj in serializer.data:
+            obj['url'] = reverse('employee-detail', args=[obj[self.lookup_field]], request=request)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def retrieve(self, request, employee=None):
+        employee = get_object_or_404(self.queryset, employee=employee)
+        serializer = self.serializer_class(employee)
+        return Response(serializer.data)
+
+    def update(self, request, employee=None):
+        instance = self.queryset.get(employee=employee)
+        serializer = self.serializer_class(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def partial_update(self, request, employee=None):
+        instance = self.queryset.get(employee=employee)
+        serializer = self.serializer_class(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+    def destroy(self, request, employee=None):
+        instance = self.queryset.get(employee=employee)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=['get', 'post'], detail=False)
+    def filter(self, request):
+        self.serializer_class = FilterOsSerializer
+        serialized_instance = OsSerializer(Os.objects.all()[0]).data
+        serializer_fields = [k for k, v in serialized_instance.items()]
+        data = {}
+
+        if request.method == 'POST':
+            if type(request.data) == 'dict':
+                data = request.data.dict()
+            else:
+                data = request.data
+        if request.method == 'GET':
+            data = request.query_params.dict()
+
+        data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
+        data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
+
+        model = self.queryset.filter(**data)
+        serializer_class = OsSerializer
+        serializer = serializer_class(model, many=True)
+
+        if model.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        page = self.paginator.paginate_queryset(serializer.data, request)
+        if page is not None:
+            return self.paginator.get_paginated_response(page)
+
+        return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+    @action(methods=['get', 'post'], detail=False)
+    def search(self, request):
+        self.serializer_class = QuerySerializer
+        query = request.data.get('query', '')
+
+        if request.method == 'GET':
+            query = request.query_params.get('q', '')
+        model = self.queryset.filter(
+            Q(name__icontains=query) | Q(type__icontains=query)
+        )
+
+        serializer_class = OsSerializer
         serializer = serializer_class(model, many=True)
 
         if model.count() == 0:

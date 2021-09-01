@@ -4,3 +4,5 @@ from .models import *
 admin.site.register(Machine)
 admin.site.register(Model)
 admin.site.register(Os)
+admin.site.register(Employee)
+admin.site.register(Software)

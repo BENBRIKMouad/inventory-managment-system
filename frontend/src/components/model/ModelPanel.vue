@@ -2,10 +2,7 @@
   <div class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center ">
     <Model-search></Model-search>
     <dash-board></dash-board>
-    <div class="flex justify-center items-center">
     <Model-table></Model-table>
-    </div>
-    
   </div>
 </template>
 
