@@ -4,6 +4,7 @@ import Main from "@/views/Main.vue";
 import Model from "@/views/Model.vue";
 import Os from "@/views/Os.vue";
 import Login from "@/views/Login.vue";
+import Employee from "@/views/Employee.vue";
 import store from "../store";
 Vue.use(VueRouter);
 
@@ -31,6 +32,15 @@ const routes = [
     name: "Os",
     props: true,
     component: Os,
+    meta: {
+      requiresLogin: true,
+    },
+  },
+  {
+    path: "/employee",
+    name: "Employee",
+    props: true,
+    component: Employee,
     meta: {
       requiresLogin: true,
     },

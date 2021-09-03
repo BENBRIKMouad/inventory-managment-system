@@ -321,11 +321,12 @@ class MachineViewSet(viewsets.ViewSet):
 
     def create(self, request, *args, **kwargs):
         if request.data.get("model"):
-            request.data["model"] = Model.objects.get(model=request.data["model"]).id
+            request.data["model"] = get_object_or_404(Model,model=request.data["model"]).id
         if request.data.get("os"):
-            request.data["os"] = Os.objects.get(os=request.data["os"]).id
+            request.data["os"] = get_object_or_404(Os,os=request.data["os"]).id
         if request.data.get("employee"):
-            request.data["employee"] = Employee.objects.get(employee=request.data["employee"]).id
+            request.data["employee"] = get_object_or_404(Employee,employee=request.data["employee"]).id
+
         data = request.data
         serializer = self.serializer_class(data=data)
 
@@ -342,24 +343,24 @@ class MachineViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
     def update(self, request, machine=None):
-        instance = self.queryset.get(machine=machine)
+        instance = get_object_or_404(Machine,machine=machine)
         if request.data.get("model"):
-            request.data["model"] = Model.objects.get(model=request.data["model"]).id
+            request.data["model"] = get_object_or_404(Model, model=request.data["model"]).id
         if request.data.get("os"):
-            request.data["os"] = Os.objects.get(os=request.data["os"]).id
+            request.data["os"] = get_object_or_404(Os, os=request.data["os"]).id
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def partial_update(self, request, machine=None):
-        instance = self.queryset.get(machine=machine)
+        instance = get_object_or_404(Machine,machine=machine)
         if request.data.get("model"):
-            request.data["model"] = Model.objects.get(model=request.data["model"]).id
+            request.data["model"] = get_object_or_404(Model,model=request.data["model"]).id
         if request.data.get("os"):
-            request.data["os"] = Os.objects.get(os=request.data["os"]).id
+            request.data["os"] = get_object_or_404(Os,os=request.data["os"]).id
         if request.data.get("employee"):
-            request.data["employee"] = Employee.objects.get(employee=request.data["employee"]).id
+            request.data["employee"] = get_object_or_404(Employee,employee=request.data["employee"]).id
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -605,8 +606,8 @@ class EmployeeViewset(viewsets.ViewSet):
 
     @action(methods=['get', 'post'], detail=False)
     def filter(self, request):
-        self.serializer_class = FilterOsSerializer
-        serialized_instance = OsSerializer(Os.objects.all()[0]).data
+        self.serializer_class = FilterEmployeeSerializer
+        serialized_instance = EmployeeSerializer(Employee.objects.all()[0]).data
         serializer_fields = [k for k, v in serialized_instance.items()]
         data = {}
 
@@ -642,10 +643,10 @@ class EmployeeViewset(viewsets.ViewSet):
         if request.method == 'GET':
             query = request.query_params.get('q', '')
         model = self.queryset.filter(
-            Q(name__icontains=query) | Q(type__icontains=query)
+            Q(first_name__icontains=query) | Q(last_name__icontains=query)
         )
 
-        serializer_class = OsSerializer
+        serializer_class = EmployeeSerializer
         serializer = serializer_class(model, many=True)
 
         if model.count() == 0:
@@ -656,3 +657,17 @@ class EmployeeViewset(viewsets.ViewSet):
             return self.paginator.get_paginated_response(page)
 
         return Response(serializer.data, status=status.HTTP_302_FOUND)
+
+    @action(methods=['get', 'post'], detail=True)
+    def add_software(self, request, employee=None):
+        employee = get_object_or_404(self.queryset, employee=employee)
+        software = request.data.get('software', '')
+        software = get_object_or_404(Software, software=software)
+        for emp_software in employee.software.all():
+            if emp_software == software:
+                serializer = self.serializer_class(employee)
+                return Response(serializer.data)
+        employee.software.add(software)
+        employee.save()
+        serializer = self.serializer_class(employee)
+        return Response(serializer.data)

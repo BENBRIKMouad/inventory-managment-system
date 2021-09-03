@@ -25,8 +25,7 @@
         v-for="header in headers"
         :key="header.title"
         :class="header.class + ' ' + border"
-        class="lg:p-2 p-1 text-center xl:text-md text-sm font-semibold"
-      >
+        class="lg:p-2 p-1 text-center xl:text-md text-sm font-semibold">
         {{ header.title }}
       </th>
       <tr v-for="(el, index) in machines" :key="el.machine">
@@ -89,23 +88,17 @@
 
     <div
       v-if="show"
-      class="bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60
-      "
-    >
+      class="bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60">
       <div class="flex justify-center items-center h-screen">
         <div class="bg-white rounded-xl p-12 shadow-2xl" style="width: 75%">
           <div class="grid lg:grid-cols-2 gap-6">
             <div
               v-for="input in inputs"
               :key="input.id"
-              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1
-              "
-            >
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1">
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
                 <p>
-                  <label for="name" class="bg-white text-gray-600 px-1"
-                    >{{ input.label }} *</label
-                  >
+                  <label for="name" class="bg-white text-gray-600 px-1">{{ input.label }} *</label>
                 </p>
               </div>
               <p>
@@ -114,8 +107,7 @@
                   :type="input.type"
                   autocomplete="false"
                   tabindex="0"
-                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full
-                  "
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
                 />
               </p>
             </div>
@@ -213,38 +205,12 @@
           <div class="mt-6 pt-3">
             <button
               @click="exec(action)"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-blue-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-blue-700
-                transition-all
-                duration-200
-                m-4
-              "
-            >
+              class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-700 transition-all duration-200 m-4">
               {{ action }}
             </button>
             <button
               @click="close_modal()"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-red-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-red-700
-                transition-all
-                duration-200
-                m-4
-              "
-            >
+              class="rounded text-gray-100 px-6 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-4">
               cancel
             </button>
           </div>
@@ -368,13 +334,11 @@ export default {
       let employee = employees.find((el) => el.last_name + " " + el.first_name == values["employee"]);
       let os = oss.find((el) => el.name + " " + el.type == values["os"]);
 
-      values["model"] = model.model;
-      values["os"] = os.os;
+      values["model"] = model  ? model.model : ""
+      values["os"] = os ? os.os : ""
       values["assigned"] = this.assigned;
-
-      if (employee) values["employee"] = employee.employee;
-      else values["employee"] = null;
-
+      values["employee"] = employee ? employee.employee : ""
+     
       if (action == "Edit") {
         values["id"] = this.id;
         this.$store.dispatch("updateMachines", values);
@@ -429,7 +393,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("getMachines");
+    this.$store.dispatch("getMachines")
     this.$store.dispatch("getModels");
     this.$store.dispatch("getOs");
     this.$store.dispatch("getEmployee");

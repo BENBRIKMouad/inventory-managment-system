@@ -3,11 +3,6 @@
     <form v-on:submit.prevent="search">
       <font-awesome-icon icon="search" class="absolute top-3 ml-3 text-sm" />
       <input
-        type="hidden"
-        name="CSRFToken"
-        value="OWY4NmQwODE4ODRjN2Q2NTlhMmZlYWEwYzU1YWQwMTVhM2JmNGYxYjJiMGI4MjJjZDE1ZDZMGYwMGEwOA=="
-      />
-      <input
         type="text"
         placeholder="Search"
         v-model="searchq"

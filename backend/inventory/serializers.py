@@ -34,6 +34,14 @@ class EmployeeSerializer(serializers.ModelSerializer):
         fields = ('employee', 'email', 'first_name', 'last_name', 'identifier', 'software')
 
 
+class SoftwareEmployeeSerializer(serializers.ModelSerializer):
+    software = SoftwareSerializer(many=False, required=False)
+
+    class Meta:
+        model = Employee
+        fields = ('software',)
+
+
 class FilterEmployeeSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass

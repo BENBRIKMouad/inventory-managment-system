@@ -8,6 +8,27 @@ const defaultHeaders = {
   "Accept-Language": "fr-fr",
 };
 
+function fireError(error) {
+  let err = "";
+  Object.entries(error.response.data).forEach((val) => {
+    const [key, value] = val;
+    err += `${key} : ${value}<br>`;
+  });
+  Swal.fire({
+    title: err,
+    icon: "error",
+    confirmButtonColor: "#3085d6",
+    confirmButtonText: "ok",
+  });
+}
+function fireNotFound() {
+  Swal.fire({
+    title: "aucun resultat n'est trouvé",
+    icon: "error",
+    confirmButtonColor: "#3085d6",
+    confirmButtonText: "ok",
+  });
+}
 axios.defaults.headers.common["Accept-Language"] = "fr-fr";
 if (localStorage.getItem("token"))
   axios.defaults.headers.common[
@@ -64,7 +85,7 @@ export default new Vuex.Store({
       state.employee = data;
     },
     setSoftware(state, data) {
-      state.Software = data;
+      state.software = data;
     },
     updateStorage(state, { access, refresh }) {
       state.accessToken = access;
@@ -81,6 +102,7 @@ export default new Vuex.Store({
   actions: {
     //login
     async userLogin(context, { username, password }) {
+      axios.defaults.headers.common["Authorization"] = ``;
       return await new Promise((resolve, reject) => {
         axios({
           method: "post",
@@ -159,26 +181,48 @@ export default new Vuex.Store({
       });
     },
     //machine
-
-    async getMachines(context) {
-      const { data } = await axios({
-        method: "get",
-        url: `${server}api/inventory/machine/`,
-      }).catch(function(error) {
-        let err = "";
-        Object.entries(error.response.data).forEach((val) => {
-          const [key, value] = val;
-          err += `${key} : ${value}<br>`;
-        });
-        Swal.fire({
-          title: err,
-          icon: "error",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "ok",
-        });
+    async verifyRefreshToken(context) {
+      return await new Promise((resolve, reject) => {
+        context
+          .dispatch("verifyToken", { token: localStorage.getItem("token") })
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            context
+              .dispatch("refreshToken", {
+                token: localStorage.getItem("refresh"),
+              })
+              .then(() => {
+                resolve();
+              })
+              .catch((err) => {
+                context.commit("updateStorage", { access: "", refresh: "" });
+                localStorage.clear();
+                reject(err);
+              });
+          });
       });
-      context.commit("setMachines", data);
-      context.dispatch("getAviable");
+    },
+    async getMachines(context) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: `${server}api/inventory/machine/`,
+          })
+            .then((response) => {
+              context.commit("setMachines", response.data);
+              context.dispatch("getAviable");
+            })
+            .catch((error) => {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
     },
 
     async updateMachines(
@@ -195,162 +239,190 @@ export default new Vuex.Store({
         employee,
       }
     ) {
-      await axios({
-        method: "patch",
-        data: {
-          name: name,
-          serial_number: serial_number,
-          reference: reference,
-          storage: storage,
-          model: model,
-          os: os,
-          assigned: assigned,
-          employee: employee,
-        },
-        url: `${server}api/inventory/machine/${id}/`,
-      }).catch(function(error) {
-        let err = "";
-        Object.entries(error.response.data).forEach((val) => {
-          const [key, value] = val;
-          err += `${key} : ${value}<br>`;
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "patch",
+            data: {
+              name: name,
+              serial_number: serial_number,
+              reference: reference,
+              storage: storage,
+              model: model,
+              os: os,
+              assigned: assigned,
+              employee: employee,
+            },
+            url: `${server}api/inventory/machine/${id}/`,
+          })
+            .then((response) => {
+              context.dispatch("getMachines");
+            })
+            .catch(function(error) {
+              fireError(err);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
         });
-        Swal.fire({
-          title: err,
-          icon: "error",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "ok",
-        });
-      });
-      context.dispatch("getMachines");
     },
 
     async addMachine(
       context,
       { name, serial_number, reference, storage, model, os, assigned, employee }
     ) {
-      const { data } = await axios({
-        method: "post",
-        data: {
-          name: name,
-          serial_number: serial_number,
-          reference: reference,
-          storage: storage,
-          model: model,
-          os: os,
-          assigned: assigned,
-          employee: employee,
-        },
-        url: `${server}api/inventory/machine/`,
-      }).catch(function(error) {
-        let err = "";
-        Object.entries(error.response.data).forEach((val) => {
-          const [key, value] = val;
-          err += `${key} : ${value}<br>`;
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            data: {
+              name: name,
+              serial_number: serial_number,
+              reference: reference,
+              storage: storage,
+              model: model,
+              os: os,
+              assigned: assigned,
+              employee: employee,
+            },
+            url: `${server}api/inventory/machine/`,
+          })
+            .then(() => {
+              context.dispatch("getMachines");
+              context.commit("setMachineCount", this.state["modelsCount"] + 1);
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+          fireError(error);
         });
-        Swal.fire({
-          title: err,
-          icon: "error",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "ok",
-        });
-      });
-      context.dispatch("getMachines");
-      context.commit("setMachineCount", this.state["modelsCount"] + 1);
     },
 
     async searchMachines(context, q) {
-      const { data } = await axios({
-        method: "post",
-        url: server + "api/inventory/machine/search/",
-        data: {
-          query: q,
-        },
-      }).catch(function(error) {
-        if (error.response.status == 404) {
-          context.commit("setMachines", []);
-          Swal.fire({
-            title: "aucun résultat pour votre recherche",
-            icon: "question",
-            showConfirmButton: false,
-          });
-        }
-      });
-      context.commit("setMachines", data);
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            url: server + "api/inventory/machine/search/",
+            data: {
+              query: q,
+            },
+          })
+            .then((response) => {
+              context.commit("setMachines", response.data);
+            })
+            .catch((error) => {
+              if (error.response.status == 404) {
+                context.commit("setMachines", []);
+                fireNotFound();
+              } else fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
     },
 
     async deleteMchine(context, id) {
-      await axios({
-        method: "delete",
-        url: server + "api/inventory/machine/" + id + "/",
-      }).catch(function(error) {
-        let err = "";
-        Object.entries(error.response.data).forEach((val) => {
-          const [key, value] = val;
-          err += `${key} : ${value}<br>`;
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "delete",
+            url: server + "api/inventory/machine/" + id + "/",
+          })
+            .then((response) => {
+              context.commit("setMachineCount", this.state["modelsCount"] - 1);
+              context.dispatch("getMachines");
+            })
+            .catch((error) => {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
         });
-        Swal.fire({
-          title: err,
-          icon: "error",
-          confirmButtonColor: "#3085d6",
-          confirmButtonText: "ok",
-        });
-      });
-      context.commit("setMachineCount", this.state["modelsCount"] - 1);
-      context.dispatch("getMachines");
     },
 
     async filterMachines(
       context,
       { model, ref, sn, cpu, os, ram, stockage, machine }
     ) {
-      //console.log(machine, model, ref, sn, cpu, os, ram, stockage)
-      const { data } = await axios({
-        method: "post",
-        url: server + "api/inventory/machine/filter/",
-        data: {
-          name__icontains: machine,
-          model__name__icontains: model,
-          reference: ref,
-          serial_number: sn,
-          model__cpu__icontains: cpu,
-          os__name__icontains: os,
-          model__ram: ram,
-          storage: stockage,
-          assigned: "",
-        },
-      }).catch(function(error) {
-        if (error.response.status == 404) {
-          context.commit("setMachines", []);
-          Swal.fire({
-            title: "aucun résultat pour votre recherche",
-            icon: "question",
-            showConfirmButton: false,
-          });
-        }
-      });
-      context.commit("setMachines", data);
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            url: server + "api/inventory/machine/filter/",
+            data: {
+              name__icontains: machine,
+              model__name__icontains: model,
+              reference: ref,
+              serial_number: sn,
+              model__cpu__icontains: cpu,
+              os__name__icontains: os,
+              model__ram: ram,
+              storage: stockage,
+              assigned: "",
+            },
+          })
+            .then((response) => {
+              context.commit("setMachines", response.data);
+            })
+            .catch((error) => {
+              if (error.response.status == 404) {
+                context.commit("setMachines", []);
+                fireNotFound();
+              }
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
     },
 
     async getMachineCount(context) {
-      const { data } = await axios({
-        method: "get",
-        url: server + "api/inventory/machine/",
-      });
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: server + "api/inventory/machine/",
+          }).then((response) => {
+            context.commit("setMachineCount",response.data.count);
+          })
+        })
+        .catch((err) => {
+          fireError(err);
+        });
 
-      context.commit("setMachineCount", data.count);
     },
 
     //get number of free machines
     async getAviable(context) {
-      const { data } = await axios({
-        method: "get",
-        url: server + "api/inventory/model/",
-      });
-      let count = 0;
-      data.results.forEach((element) => {
-        count += element.c_available;
-      });
-      context.commit("setAviable", count);
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: server + "api/inventory/model/",
+          }).then((response) => {
+            let count = 0;
+            response.data.results.forEach((element) => {
+              count += element.c_available;
+            });
+            context.commit("setAviable", count);
+          })
+        })
+        .catch((err) => {
+          fireError(err);
+        });
     },
 
     //models
@@ -679,14 +751,14 @@ export default new Vuex.Store({
 
     async updateEmployee(
       context,
-      { email, first_name, last_name, identifier }
+      { id, email, first_name, last_name, identifier }
     ) {
       await axios({
         method: "patch",
         data: {
           email: email,
           first_name: first_name,
-          lst_name: last_name,
+          last_name: last_name,
           identifier: identifier,
         },
         url: `${server}api/inventory/employee/${id}/`,
@@ -771,6 +843,27 @@ export default new Vuex.Store({
         }
       });
       context.commit("setEmployee", data);
+    },
+
+    //software
+    async getSoftware(context) {
+      const { data } = await axios({
+        method: "get",
+        url: server + "api/inventory/software/",
+      }).catch(function(error) {
+        let err = "";
+        Object.entries(error.response.data).forEach((val) => {
+          const [key, value] = val;
+          err += `${key} : ${value}<br>`;
+        });
+        Swal.fire({
+          title: err,
+          icon: "error",
+          confirmButtonColor: "#3085d6",
+          confirmButtonText: "ok",
+        });
+      });
+      context.commit("setSoftware", data);
     },
   },
   modules: {},

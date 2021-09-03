@@ -14,7 +14,8 @@ class Model(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.model = uuid.uuid4().hex.__str__()
+        if not self.pk:
+            self.model = uuid.uuid4().hex.__str__()
         super(Model, self).save(*args, **kwargs)
 
 
@@ -30,7 +31,8 @@ class Os(models.Model):
         return self.name + " " + self.type
 
     def save(self, *args, **kwargs):
-        self.os = uuid.uuid4().hex.__str__()
+        if not self.pk:
+            self.os = uuid.uuid4().hex.__str__()
         super(Os, self).save(*args, **kwargs)
 
 
@@ -44,7 +46,8 @@ class Software(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.software = uuid.uuid4().hex.__str__()
+        if not self.pk:
+            self.software = uuid.uuid4().hex.__str__()
         super(Software, self).save(*args, **kwargs)
 
 
@@ -60,7 +63,8 @@ class Employee(models.Model):
         return self.first_name + " " + self.last_name
 
     def save(self, *args, **kwargs):
-        self.employee = uuid.uuid4().hex.__str__()
+        if not self.pk:
+            self.employee = uuid.uuid4().hex.__str__()
         super(Employee, self).save(*args, **kwargs)
 
 
@@ -79,5 +83,6 @@ class Machine(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.machine = uuid.uuid4().hex.__str__()
+        if not self.pk:
+            self.machine = uuid.uuid4().hex.__str__()
         super(Machine, self).save(*args, **kwargs)

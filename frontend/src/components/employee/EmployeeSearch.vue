@@ -67,20 +67,20 @@
 
 <script>
 export default {
-  name: "MachineSearch",
+  name: "EmployeeSearch",
   data() {
     return {
       searchq: "",
       filterfields: [
-        { id: "name", placeholder: "Model", value: "", type: "text" },
-        { id: "cpu", placeholder: "CPU", value: "" , type: "text"},
-        { id: "ram", placeholder: "RAM", value: "" , type: "number"},
+        { id: "first_name", placeholder: "prenom", value: "", type: "text" },
+        { id: "last_name", placeholder: "nom", value: "" , type: "text"},
+        { id: "identifer", placeholder: "matricule", value: "" , type: "text"},
       ],
     };
   },
   methods: {
     search() {
-      this.$store.dispatch("searchModels", this.searchq);
+      this.$store.dispatch("searchEmployee", this.searchq);
     },
     filter() {
        let filter = this.filterfields.reduce(function (map, obj) {
@@ -88,7 +88,7 @@ export default {
           return map;
         }, {});
       console.log(filter);
-      this.$store.dispatch("filterModels", filter);
+      this.$store.dispatch("filterEmployee", filter);
     },
   },
   computed: {},
