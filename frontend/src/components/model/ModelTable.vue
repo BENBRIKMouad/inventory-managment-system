@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div class="flex justify-start">
       <button
         @click="add()"
@@ -29,11 +29,11 @@
       >
         {{ header.title }}
       </th>
-      <tr v-for="(el,index) in models()" :key="el.machine">
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+      <tr v-for="(el, index) in models()" :key="el.machine">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ index }}
         </td>
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.name }}
         </td>
         <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
@@ -44,7 +44,7 @@
         </td>
         <td :class="border">{{ el.count }}</td>
         <td :class="border">
-          {{ el.c_available}}
+          {{ el.c_available }}
         </td>
         <td :class="border">
           <button @click="edit(el)">
@@ -64,6 +64,22 @@
       </tr>
     </table>
 
+    <div class="relative ">
+      <button
+        @click="Perv()"
+        v-if="this.$store.state.models.previous"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
+      >
+        Perv <font-awesome-icon icon="angle-double-left" />
+      </button>
+      <button
+        @click="Next()"
+        v-if="this.$store.state.models.next"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
+      >
+        Next <font-awesome-icon icon="angle-double-right" />
+      </button>
+    </div>
     <div
       v-if="show"
       class=" bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60"
@@ -132,15 +148,13 @@
                   <option
                     v-for="item in os(select.value)"
                     :key="item.name"
-                    :value="item.name +' '+ item.type"
+                    :value="item.name + ' ' + item.type"
                   >
-                    {{ item.name }} {{item.type}}
+                    {{ item.name }} {{ item.type }}
                   </option>
                 </select>
               </p>
             </div>
-
- 
           </div>
           <div class="mt-6 pt-3">
             <button
@@ -166,9 +180,7 @@
 import Swal from "sweetalert2";
 export default {
   name: "DataTable",
-  components: {
-   
-  },
+  components: {},
   data() {
     return {
       action: "",
@@ -192,9 +204,7 @@ export default {
         { id: "cpu", label: "cpu", value: "", type: "text" },
         { id: "ram", label: "ram", value: "", type: "number" },
       ],
-      selects: [
-       
-      ],
+      selects: [],
     };
   },
   methods: {
@@ -210,7 +220,6 @@ export default {
       //binding value of select form to machine
       this.id = model.model;
       //reemove
-    
 
       //show the modal
       this.show = true;
@@ -231,7 +240,7 @@ export default {
     },
     exec(action) {
       if (action == "Edit") {
-        let values = this.inputs.reduce(function (map, obj) {
+        let values = this.inputs.reduce(function(map, obj) {
           map[obj.id] = obj.value;
           return map;
         }, {});
@@ -239,7 +248,7 @@ export default {
         this.$store.dispatch("updateModel", values);
         this.close_modal();
       } else {
-        let values =  this.inputs.reduce(function (map, obj) {
+        let values = this.inputs.reduce(function(map, obj) {
           map[obj.id] = obj.value;
           return map;
         }, {});
@@ -259,7 +268,6 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-
           this.$store.dispatch("deleteModel", id);
           Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
@@ -271,18 +279,17 @@ export default {
     models(val = null) {
       let models = this.$store.state.models.results;
       if (val)
-        models = models.filter(function (el) {
+        models = models.filter(function(el) {
           return el.name != val;
         });
       return models;
     },
-    os(val) {
-      let os = this.$store.state.os.results;
-      os = os.filter(function (el) {
-        return el.name +" "+ el.type != val;
-      });
-      return os;
+    Next(){
+      this.$store.dispatch("getSoftware",this.$store.state.models.next);
     },
+    Perv(){
+      this.$store.dispatch("getSoftware",this.$store.state.models.previous);
+    }
   },
   mounted() {
     this.$store.dispatch("getModels");

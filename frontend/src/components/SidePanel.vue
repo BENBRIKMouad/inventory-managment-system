@@ -55,7 +55,7 @@ export default {
         { icon: "layer-group", title: "model",path:"Model" },
         { icon: "laptop-code", title: "os",path:"Os" },
         { icon: "address-card", title: "employee",path:"employee" },
-        { icon: "compact-disc", title: "logiciel",path:"Os" },
+        { icon: "compact-disc", title: "logiciel",path:"Software" },
       ],
     };
   },computed:{

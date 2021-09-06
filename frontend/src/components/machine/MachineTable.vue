@@ -85,7 +85,23 @@
         </td>
       </tr>
     </table>
-
+      <div class="relative ">
+      <button
+        @click="Perv()"
+       v-if="this.$store.state.machine.previous"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
+      >
+           Perv <font-awesome-icon icon="angle-double-left" />
+      </button>
+      <button
+        @click="Next()"
+        v-if="this.$store.state.machine.next"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
+      >
+        Next  <font-awesome-icon icon="angle-double-right" />
+      </button>
+      <div class="h-12"></div>
+    </div>
     <div
       v-if="show"
       class="bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60">
@@ -391,6 +407,13 @@ export default {
       });
       return employee;
     },
+    Next(){
+      this.$store.dispatch("getSoftware",this.$store.state.machine.next);
+    },
+    Perv(){
+      this.$store.dispatch("getSoftware",this.$store.state.machine.previous);
+    }
+
   },
   mounted() {
     this.$store.dispatch("getMachines")

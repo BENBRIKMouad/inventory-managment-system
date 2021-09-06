@@ -3,18 +3,7 @@
     <div class="flex justify-end">
       <button
         @click="add()"
-        class="
-          rounded
-          text-gray-100
-          px-6
-          py-2
-          bg-green-500
-          shadow-md
-          hover:shadow-inner
-          hover:bg-green-600
-          transition-all
-          m-2
-        "
+        class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
       >
         Add
       </button>
@@ -29,15 +18,18 @@
       >
         {{ header.title }}
       </th>
-      <tr v-for="(el,index) in os()" :key="el.machine">
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+      <tr v-for="(el, index) in Software()" :key="el.machine">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ index }}
         </td>
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.name }}
         </td>
         <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
-          {{ el.type }}
+          {{ el.version }}
+        </td>
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
+          {{ el.editor }}
         </td>
         <td :class="border">
           <button @click="edit(el)">
@@ -47,7 +39,7 @@
             />
           </button>
 
-          <button @click="destroy(el.os)">
+          <button @click="destroy(el.software)">
             <font-awesome-icon
               icon="times-circle"
               class="hover:shadow-lg transition-all text-red-600 text-lg m-2"
@@ -56,20 +48,26 @@
         </td>
       </tr>
     </table>
-
+    <div class="relative p-2">
+      <button
+        @click="Perv()"
+       v-if="this.$store.state.software.previous"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
+      >
+           Perv  <font-awesome-icon icon="angle-double-left" />
+      </button>
+      <button
+        @click="Next()"
+        v-if="this.$store.state.software.next"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
+      >
+        Next  <font-awesome-icon icon="angle-double-right" />
+      </button>
+    </div>
+    <div class="h-12"></div>
     <div
       v-if="show"
-      class="
-        bg-gray-500
-        absolute
-        top-0
-        left-0
-        bottom-0
-        right-0
-        h-full
-        w-full
-        bg-opacity-60
-      "
+      class="bg-gray-500 absolute top-0 left-0 bottom-0 right-0 h-full w-full bg-opacity-60"
     >
       <div class="flex justify-center items-center h-screen">
         <div class="bg-white rounded-xl p-12 shadow-2xl" style="width: 75%">
@@ -77,15 +75,7 @@
             <div
               v-for="input in inputs"
               :key="input.id"
-              class="
-                border
-                focus-within:border-blue-500 focus-within:text-blue-500
-                transition-all
-                duration-500
-                relative
-                rounded
-                p-1
-              "
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1"
             >
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
                 <p>
@@ -100,15 +90,7 @@
                   :type="input.type"
                   autocomplete="false"
                   tabindex="0"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
                 />
               </p>
             </div>
@@ -116,37 +98,13 @@
           <div class="mt-6 pt-3">
             <button
               @click="exec(action)"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-blue-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-blue-700
-                transition-all
-                duration-200
-                m-4
-              "
+              class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-700 transition-all duration-200 m-4"
             >
               {{ action }}
             </button>
             <button
               @click="close_modal()"
-              class="
-                rounded
-                text-gray-100
-                px-6
-                py-2
-                bg-red-500
-                shadow-md
-                hover:shadow-inner
-                hover:bg-red-700
-                transition-all
-                duration-200
-                m-4
-              "
+              class="rounded text-gray-100 px-6 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-4"
             >
               cancel
             </button>
@@ -161,9 +119,7 @@
 import Swal from "sweetalert2";
 export default {
   name: "OsTable",
-  components: {
-   
-  },
+  components: {},
   data() {
     return {
       action: "",
@@ -175,33 +131,32 @@ export default {
       border: "border border-gray-500 p-1 text-sm",
       headers: [
         { title: "#", class: "" },
-        { title: "nom de l'os", class: "" },
-        { title: "type de l'os", class: "" },
+        { title: "nom de logiciel", class: "" },
+        { title: "version", class: "" },
+        { title: "editeur", class: "" },
         { title: "actions" },
       ],
       inputs: [
-        { id: "name", label: "nom de l'os", value: "", type: "text" },
-        { id: "type", label: "type de l'os", value: "", type: "text" },
+        { id: "name", label: "nom du logiciel", value: "", type: "text" },
+        { id: "version", label: "version", value: "", type: "text" },
+        { id: "editor", label: "editeur", value: "", type: "text" },
       ],
-      selects: [
-       
-      ],
+      selects: [],
     };
   },
   methods: {
-    edit(os) {
+    edit(software) {
       this.action = "Edit";
       //binding data
 
       //binding value of input form to machine
       this.inputs.forEach((element) => {
-        element.value = os[element.id];
+        element.value = software[element.id];
         //console.log(element.id+" "+element.value)
       });
       //binding value of select form to machine
-      this.id = os.os;
-      //reemove
-    
+      this.id = software.software;
+      //remove
 
       //show the modal
       this.show = true;
@@ -223,20 +178,20 @@ export default {
 
     exec(action) {
       if (action == "Edit") {
-        let values = this.inputs.reduce(function (map, obj) {
+        let values = this.inputs.reduce(function(map, obj) {
           map[obj.id] = obj.value;
           return map;
         }, {});
         values["id"] = this.id;
-        this.$store.dispatch("updateOs", values);
+        this.$store.dispatch("updateSoftware", values);
         this.close_modal();
       } else {
-        let values =  this.inputs.reduce(function (map, obj) {
+        let values = this.inputs.reduce(function(map, obj) {
           map[obj.id] = obj.value;
           return map;
         }, {});
 
-        this.$store.dispatch("addOs", values);
+        this.$store.dispatch("addSoftware", values);
         this.close_modal();
       }
     },
@@ -251,8 +206,7 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-
-          this.$store.dispatch("deleteOs", id);
+          this.$store.dispatch("deleteSoftware", id);
           Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
       });
@@ -262,24 +216,20 @@ export default {
       this.show = false;
     },
 
-    models(val = null) {
-      let models = this.$store.state.models.results;
-      if (val)
-        models = models.filter(function (el) {
-          return el.name != val;
-        });
-      return models;
+    Software() {
+      let software = this.$store.state.software.results;
+      return software;
     },
+    Next(){
+      this.$store.dispatch("getSoftware",this.$store.state.software.next);
+    },
+    Perv(){
+      this.$store.dispatch("getSoftware",this.$store.state.software.previous);
+    }
 
-    os() {
-      let os = this.$store.state.os.results;
-      return os;
-    },
   },
   mounted() {
-    this.$store.dispatch("getMachines");
-    this.$store.dispatch("getModels");
-    this.$store.dispatch("getOs");
+    this.$store.dispatch("getSoftware");
   },
   computed: {
     machines() {

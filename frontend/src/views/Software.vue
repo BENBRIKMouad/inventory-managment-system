@@ -1,8 +1,8 @@
 <template>
   <div class="Main">
-    <div class="flex h-screen w-full transition-all bg-gray-50 ">
+    <div class="flex h-screen w-full transition-all bg-gray-50">
     <side-panel></side-panel>
-    <model-panel></model-panel>
+    <software-panel></software-panel>
     </div>
   </div>
 </template>
@@ -10,10 +10,10 @@
 <script>
 // @ is an alias to /src
 import SidePanel from '../components/SidePanel.vue';
-import ModelPanel from '../components/model/ModelPanel.vue';
+import SoftwarePanel from '../components/software/SoftwarePanel.vue';
 
 export default {
   name: "Model",
-  components:{SidePanel,ModelPanel}
+  components:{SidePanel,SoftwarePanel}
 };
 </script>

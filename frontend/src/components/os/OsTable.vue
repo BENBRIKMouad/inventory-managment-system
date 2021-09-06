@@ -56,6 +56,22 @@
         </td>
       </tr>
     </table>
+    <div class="relative ">
+      <button
+        @click="Perv()"
+       v-if="this.$store.state.os.previous"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
+      >
+           Perv  <font-awesome-icon icon="angle-double-left" />
+      </button>
+      <button
+        @click="Next()"
+        v-if="this.$store.state.os.next"
+        class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
+      >
+        Next  <font-awesome-icon icon="angle-double-right" />
+      </button>
+    </div>
 
     <div
       v-if="show"
@@ -275,6 +291,12 @@ export default {
       let os = this.$store.state.os.results;
       return os;
     },
+    Next(){
+      this.$store.dispatch("getSoftware",this.$store.state.os.next);
+    },
+    Perv(){
+      this.$store.dispatch("getSoftware",this.$store.state.os.previous);
+    }
   },
   mounted() {
     this.$store.dispatch("getMachines");

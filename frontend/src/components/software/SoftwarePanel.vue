@@ -11,17 +11,17 @@
       items-center
     "
   >
-    <os-search></os-search>
+    <software-search></software-search>
     <dash-board></dash-board>
     <div class="">
-      <os-table></os-table>
+      <software-table></software-table>
     </div>
   </div>
 </template>
 
 <script>
-import OsTable from "./OsTable.vue";
-import OsSearch from "./OsSearch.vue";
+import SoftwareTable from "./SoftwareTable.vue";
+import SoftwareSearch from "./SoftwareSearch.vue";
 import DashBoard from "../DashBoard.vue";
 export default {
   name: "MainPanel",
@@ -31,13 +31,12 @@ export default {
     };
   },
   components: {
-    OsSearch,
+    SoftwareTable,
     DashBoard,
-    OsTable,
+    SoftwareSearch,
   },
   mounted() {},
 };
 </script>
 
-<style>
-</style>
+<style></style>

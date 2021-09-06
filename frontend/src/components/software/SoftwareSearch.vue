@@ -78,13 +78,14 @@ export default {
       searchq: "",
       filterfields: [
         { id: "name", placeholder: "nom", value: "", type: "text" },
-        { id: "type", placeholder: "type de l'os", value: "" , type: "text"},
+        { id: "editor", placeholder: "editeur", value: "" , type: "text"},
+        { id: "version", placeholder: "version", value: "" , type: "text"},
       ],
     };
   },
   methods: {
     search() {
-      this.$store.dispatch("searchOs", this.searchq);
+      this.$store.dispatch("searchSoftware", this.searchq);
     },
     filter() {
        let filter = this.filterfields.reduce(function (map, obj) {
@@ -92,7 +93,7 @@ export default {
           return map;
         }, {});
       console.log(filter);
-      this.$store.dispatch("filterOs", filter);
+      this.$store.dispatch("filterSoftware", filter);
     },
   },
   computed: {},

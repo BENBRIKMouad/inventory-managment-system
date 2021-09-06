@@ -5,6 +5,7 @@ import Model from "@/views/Model.vue";
 import Os from "@/views/Os.vue";
 import Login from "@/views/Login.vue";
 import Employee from "@/views/Employee.vue";
+import Software from "@/views/Software.vue";
 import store from "../store";
 Vue.use(VueRouter);
 
@@ -41,6 +42,15 @@ const routes = [
     name: "Employee",
     props: true,
     component: Employee,
+    meta: {
+      requiresLogin: true,
+    },
+  },
+  {
+    path: "/software",
+    name: "Software",
+    props: true,
+    component: Software,
     meta: {
       requiresLogin: true,
     },

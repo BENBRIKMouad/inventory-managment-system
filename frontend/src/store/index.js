@@ -109,7 +109,6 @@ export default new Vuex.Store({
   },
 
   actions: {
-
     //login
 
     async userLogin(context, { username, password }) {
@@ -136,7 +135,7 @@ export default new Vuex.Store({
             resolve();
           })
           .catch((error) => {
-            fireError(error)
+            fireError(error);
             reject(error);
           });
       });
@@ -180,7 +179,6 @@ export default new Vuex.Store({
           });
       });
     },
-
 
     //machine
 
@@ -406,7 +404,6 @@ export default new Vuex.Store({
         });
     },
 
-
     //get number of free machines
     async getAviable(context) {
       context
@@ -427,7 +424,6 @@ export default new Vuex.Store({
           fireError(err);
         });
     },
-
 
     //models
 
@@ -591,7 +587,6 @@ export default new Vuex.Store({
         });
     },
 
-
     //os
 
     async getOs(context) {
@@ -734,7 +729,6 @@ export default new Vuex.Store({
         });
     },
 
-
     //employee
 
     async getEmployee(context) {
@@ -822,13 +816,12 @@ export default new Vuex.Store({
             method: "delete",
             url: server + "api/inventory/employee/" + id + "/",
           })
-          .then((response) => {
-            context.dispatch("getEmployee");
-          })  
-            .catch(function (error) {
-            fireError(error);
-          })
-         
+            .then((response) => {
+              context.dispatch("getEmployee");
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
         })
         .catch((err) => {
           fireError(err);
@@ -848,13 +841,13 @@ export default new Vuex.Store({
           })
             .then((response) => {
               context.commit("setEmployee", response.data);
-            })  
-            .catch(function (error) {
-            if (error.response.status == 404) {
-              context.commit("setEmployee", []);
-              fireNotFound()
-            }
-          });
+            })
+            .catch(function(error) {
+              if (error.response.status == 404) {
+                context.commit("setEmployee", []);
+                fireNotFound();
+              }
+            });
         })
         .catch((err) => {
           fireError(err);
@@ -868,33 +861,32 @@ export default new Vuex.Store({
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
-           await axios({
-             method: "post",
-             url: server + "api/inventory/employee/filter/",
-             data: {
-               email__icontains: email,
-               first_name__icontains: first_name,
-               last_name__icontains: last_name,
-               identifier: identifier,
-             },
-           })
-             .then((response) => {
-               context.commit("setEmployee", response.data);
-             })
-             .catch(function(error) {
-               if (error.response.status == 404) {
-                 context.commit("setEmployee", []);
-                 fireNotFound();
-               }
-             });
-           
+          await axios({
+            method: "post",
+            url: server + "api/inventory/employee/filter/",
+            data: {
+              email__icontains: email,
+              first_name__icontains: first_name,
+              last_name__icontains: last_name,
+              identifier: identifier,
+            },
+          })
+            .then((response) => {
+              context.commit("setEmployee", response.data);
+            })
+            .catch(function(error) {
+              if (error.response.status == 404) {
+                context.commit("setEmployee", []);
+                fireNotFound();
+              }
+            });
         })
         .catch((err) => {
           fireError(err);
         });
     },
 
-    async addSoftwareToEmployee(context,{software,employee}) {
+    async addSoftwareToEmployee(context, { software, employee }) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -904,19 +896,21 @@ export default new Vuex.Store({
               software: software,
             },
             url: `${server}api/inventory/employee/${employee}/add_software/`,
-          }).then((response) => {
-            context.dispatch('getEmployee')
-            return response.data
-          }).catch((error) => {
-            fireError(error)
           })
+            .then((response) => {
+              context.dispatch("getEmployee");
+              return response.data;
+            })
+            .catch((error) => {
+              fireError(error);
+            });
         })
         .catch((err) => {
           fireError(err);
         });
     },
 
-    async removeSoftwareToEmployee(context,{software,employee}) {
+    async removeSoftwareToEmployee(context, { software, employee }) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -926,41 +920,163 @@ export default new Vuex.Store({
               software: software,
             },
             url: `${server}api/inventory/employee/${employee}/remove_software/`,
-          }).then((response) => {
-            context.dispatch('getEmployee')
-            return response.data
-          }).catch((error) => {
-            fireError(error)
           })
+            .then((response) => {
+              context.dispatch("getEmployee");
+              return response.data;
+            })
+            .catch((error) => {
+              fireError(error);
+            });
         })
         .catch((err) => {
           fireError(err);
         });
     },
 
-
     //software
 
-    async getSoftware(context) {
+    async getSoftware(context,url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
-       await axios({
-        method: "get",
-        url: server + "api/inventory/software/",
-      })
-        .then((response) => {
-        context.commit("setSoftware", response.data);
-      })
-         .catch(function (error) {
-        fireError(error);
-      });
+          await axios({
+            method: "get",
+            url:url ? url : server + "api/inventory/software/",
+          })
+            .then((response) => {
+              context.commit("setSoftware", response.data);
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    async addSoftware(context, { name, editor, version }) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            data: {
+              name: name,
+              editor: editor,
+              version: version,
+            },
+            url: `${server}api/inventory/software/`,
+          })
+            .then((response) => {
+              context.dispatch("getSoftware");
+            })
+            .catch(function(error) {
+              fireError(err);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    async updateSoftware(context, { id, name, editor, version }) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "patch",
+            data: {
+              name: name,
+              editor: editor,
+              version: version,
+            },
+            url: `${server}api/inventory/software/${id}/`,
+          }).catch(function(error) {
+            fireError(error);
+          });
+          context.dispatch("getSoftware");
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    async deleteSoftware(context, id) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "delete",
+            url: server + "api/inventory/software/" + id + "/",
+          })
+            .then((response) => {
+              context.dispatch("getSoftware");
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    async searchSoftware(context, q) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            url: server + "api/inventory/software/search/",
+            data: {
+              query: q,
+            },
+          })
+            .then((response) => {
+              context.commit("setSoftware", response.data);
+            })
+            .catch(function(error) {
+              if (error.response.status == 404) {
+                context.commit("setSoftware", []);
+                fireNotFound();
+              }
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    async filterSoftware(context, { name, editor, version }) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "post",
+            url: server + "api/inventory/software/filter/",
+            data: {
+              name__icontains: name,
+              editor__icontains: editor,
+              version: version,
+            },
+          })
+            .then((response) => {
+              context.commit("setSoftware", response.data);
+            })
+            .catch(function(error) {
+              if (error.response.status == 404) {
+                context.commit("setSoftware", []);
+                fireNotFound();
+              }
+            });
         })
         .catch((err) => {
           fireError(err);
         });
     },
   },
-  
+
   modules: {},
 });
