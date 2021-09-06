@@ -18,12 +18,15 @@
       >
         {{ header.title }}
       </th>
-      <tr v-for="(el,index) in employee()" :key="el.machine">
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
-          {{ index + 1}}
+      <tr v-for="(el, index) in employee()" :key="el.machine">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
+          {{ index + 1 }}
         </td>
-        <td  :class="border" class="xl:p-2 lg:p-1 md:p-1">
+        <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.last_name }} {{ el.first_name }}
+        </td>
+        <td :class="border">
+          {{ el.email }}
         </td>
         <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.identifier }}
@@ -110,75 +113,86 @@
         <div class="bg-white rounded-xl p-9 shadow-2xl " style="width: 75% ">
           <div class="overflow-y-scroll max-h-64 rounded-xl p-2">
             <table class="container">
-            <th v-for="header in softwareHeaders"
+              <th
+                v-for="header in softwareHeaders"
                 :key="header.title"
                 :class="header.class + ' ' + border"
-                class="bg-white p-1 text-center xl:text-md text-sm font-semibold sticky -top-4">
-              {{ header.title }}
-            </th>
-              <tr  v-for="(el, index) in employeeSoftware.software" :key="el.software">
+                class="bg-white p-1 text-center xl:text-md text-sm font-semibold sticky -top-4"
+              >
+                {{ header.title }}
+              </th>
+              <tr
+                v-for="(el, index) in employeeSoftware.software"
+                :key="el.software"
+              >
                 <td :class="border">
                   {{ index + 1 }}
-                </td >
-                <td :class="border" >
-                  {{ el.name}}
                 </td>
-                <td  :class="border">
-                 {{ el.editor}}
+                <td :class="border">
+                  {{ el.name }}
                 </td>
-                <td  :class="border">
-                  {{ el.version}}
+                <td :class="border">
+                  {{ el.editor }}
                 </td>
-                <td  :class="border">
-                  <button @click="destroy(el.software)">
+                <td :class="border">
+                  {{ el.version }}
+                </td>
+                <td :class="border">
+                  <button @click="removeSoftware(el)">
                     <font-awesome-icon
                       icon="times-circle"
                       class="hover:shadow-lg transition-all text-red-600 text-lg m-2"
                     />
-                </button>
+                  </button>
                 </td>
               </tr>
-          </table>
+            </table>
           </div>
-          
 
           <div class="grid lg:grid-cols-1 gap-6">
             <div class="flex mt-5">
-            <div
-              v-for="select in softwareForm"
-              :key="select.id"
-              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1 md:w-96 w-52">
-              <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+              <div
+                v-for="select in softwareForm"
+                :key="select.id"
+                class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1 md:w-96 w-52"
+              >
+                <div
+                  class="-mt-4 absolute tracking-wider px-1 uppercase text-xs"
+                >
+                  <p>
+                    <label for="name" class="bg-white text-gray-600 px-1"
+                      >{{ select.label }} *</label
+                    >
+                  </p>
+                </div>
                 <p>
-                  <label for="name" class="bg-white text-gray-600 px-1">{{ select.label }} *</label >
+                  <select
+                    v-model="select.value"
+                    class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+                  >
+                    <option
+                      v-for="software in software(select.value)"
+                      :key="software.name"
+                      :value="software"
+                    >
+                      {{ software.name }} {{ software.version }}
+                    </option>
+                  </select>
                 </p>
               </div>
-              <p>
-                <select
-                  v-model="select.value"
-                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full">
-                  <option
-                    v-for="software in software(select.value)"
-                    :key="software.name"
-                    :value="software.name">
-                    {{ software.name }} {{software.version}}
-                  </option>
-                </select>
-              </p>
-              
+              <button
+                @click="add_software()"
+                class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-700 transition-all duration-200 ml-2"
+              >
+                add
+              </button>
             </div>
-            <button
-                  @click="add_software()"
-                  class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-700 transition-all duration-200 ml-2">
-                  add
-                </button>
-          </div>
-
           </div>
           <div class="mt-3 pt-2">
             <button
               @click="close_modal()"
-              class="rounded text-gray-100 px-5 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-2">
+              class="rounded text-gray-100 px-5 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-2"
+            >
               cancel
             </button>
           </div>
@@ -192,9 +206,7 @@
 import Swal from "sweetalert2";
 export default {
   name: "EmployeeTable",
-  components: {
-   
-  },
+  components: {},
   data() {
     return {
       action: "",
@@ -208,6 +220,7 @@ export default {
       headers: [
         { title: "#", class: "" },
         { title: "nom", class: "" },
+        { title: "email", class: "" },
         { title: "matricule", class: "" },
         { title: "logiciel", class: "" },
         { title: "actions" },
@@ -222,14 +235,13 @@ export default {
       inputs: [
         { id: "first_name", label: "prenom", value: "", type: "text" },
         { id: "last_name", label: "nom", value: "", type: "text" },
+        { id: "email", label: "email", value: "", type: "email" },
         { id: "identifier", label: "matricule", value: "", type: "text" },
       ],
-      softwareForm:[
-          { id: "sofrware", label: "logiciel", value: "", type: "text" },
+      softwareForm: [
+        { id: "sofrware", label: "logiciel", value: "", type: "text" },
       ],
-      employeeSoftware:null
-        
-      
+      employeeSoftware: null,
     };
   },
   methods: {
@@ -240,12 +252,11 @@ export default {
       //binding value of input form to machine
       this.inputs.forEach((element) => {
         element.value = employee[element.id];
-        //console.log(element.id+" "+element.value)
       });
       //binding value of select form to machine
       this.id = employee.employee;
       //reemove
-    
+
       //show the modal
       this.show = true;
     },
@@ -254,36 +265,47 @@ export default {
       //reset value of input
       this.inputs.forEach((element) => {
         element.value = "";
-        //console.log(element.id+" "+element.value)
       });
-      //binding value of select form to machine
-      this.selects.forEach((element) => {
-        element.value = "";
-      });
+      
+     
       //show the modal
       this.show = true;
     },
-    showSftwareList(el){
-      this.employeeSoftware= el
+    showSftwareList(el) {
+      this.employeeSoftware = el;
       this.show_list = true;
     },
-    add_software(){
-      console.log(this.softwareForm[0].value)
+    async add_software() {
+      let software = this.softwareForm[0].value;
+      let employee = this.employeeSoftware.employee;
+      let values = { software: software.software, employee: employee };
+      this.$store.dispatch("addSoftwareToEmployee", values);
+      const filterItems = this.employeeSoftware.software.filter((item) => {
+        return (
+          item.name + item.version ==
+          this.softwareForm[0].value.name + this.softwareForm[0].value.version
+        );
+      });
+      if (filterItems.length == 0)
+        this.employeeSoftware.software.push(this.softwareForm[0].value);
+    },
+    removeSoftware(software){
+      let employee = this.employeeSoftware.employee;
+      let values = { software: software.software, employee: employee };
+      this.$store.dispatch("removeSoftwareToEmployee", values);
+      this.employeeSoftware.software = this.employeeSoftware.software.filter(el => el.name+el.version != software.name+software.version)
     },
     exec(action) {
-
-      let values = this.inputs.reduce(function (map, obj) {
-          map[obj.id] = obj.value;
-          return map;
-        }, {});
+      let values = this.inputs.reduce(function(map, obj) {
+        map[obj.id] = obj.value;
+        return map;
+      }, {});
 
       if (action == "Edit") {
         values["id"] = this.id;
         this.$store.dispatch("updateEmployee", values);
-      } 
-      else 
-        this.$store.dispatch("addEmployee", values);
-        
+      } else this.$store.dispatch("addEmployee", values);
+
       this.close_modal();
     },
     destroy(id) {
@@ -297,7 +319,6 @@ export default {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-
           this.$store.dispatch("deleteEmployee", id);
           Swal.fire("Deleted!", "This machine has been deleted.", "success");
         }
@@ -310,15 +331,14 @@ export default {
     },
     employee(val) {
       let employee = this.$store.state.employee.results;
-      if(employee)
-      employee = employee.filter(function(employee) {
-        return employee.last_name + " " + employee.first_name != val;
-      });
+      if (employee)
+        employee = employee.filter(function(employee) {
+          return employee.last_name + " " + employee.first_name != val;
+        });
       return employee;
     },
     software(val) {
       let software = this.$store.state.software.results;
-      console.log(val)
       return software;
     },
   },

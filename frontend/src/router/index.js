@@ -69,14 +69,12 @@ router.beforeEach((to, from, next) => {
       store
         .dispatch("verifyToken", { token: store.state.accessToken })
         .then(() => {
-          console.log("verify");
           next();
         })
         .catch((err) => {
           store
             .dispatch("refreshToken", { token: store.state.refreshToken })
             .then(() => {
-              console.log("refresh");
               next();
             })
             .catch((err) => {

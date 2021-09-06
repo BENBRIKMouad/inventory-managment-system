@@ -9,6 +9,11 @@ from django.db.models import Q
 from .pagination import *
 from rest_framework.reverse import reverse
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.negotiation import BaseContentNegotiation
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie, vary_on_headers
+
 # Create your views here.
 
 # class MachineList(mixins.ListModelMixin,
@@ -60,6 +65,20 @@ from rest_framework.permissions import IsAuthenticated
 #             return RequestMachineSerializer
 
 
+class IgnoreClientContentNegotiation(BaseContentNegotiation):
+    def select_parser(self, request, parsers):
+        """
+        Select the first parser in the `.parser_classes` list.
+        """
+        return parsers[0]
+
+    def select_renderer(self, request, renderers, format_suffix):
+        """
+        Select the first renderer in the `.renderer_classes` list.
+        """
+        return (renderers[0], renderers[0].media_type)
+
+
 class ModelViewSet(viewsets.ViewSet):
     """
           Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **Model**
@@ -79,7 +98,7 @@ class ModelViewSet(viewsets.ViewSet):
     paginator = ModelLimitOffsetPagination()
 
     def list(self, request):
-        serializer = self.serializer_class(Model.objects.all(), many=True)
+        serializer = self.serializer_class(Model.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('model-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -192,7 +211,7 @@ class OsViewset(viewsets.ViewSet):
     paginator = OsLimitOffsetPagination()
 
     def list(self, request):
-        serializer = OsSerializer(Os.objects.all(), many=True)
+        serializer = OsSerializer(Os.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('os-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -310,7 +329,7 @@ class MachineViewSet(viewsets.ViewSet):
 
     def list(self, request):
         serializer_class = ResponseMachineSerializer
-        serializer = serializer_class(Machine.objects.all().prefetch_related(), many=True)
+        serializer = serializer_class(Machine.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('machine-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -447,7 +466,7 @@ class SoftwareViewSet(viewsets.ViewSet):
     paginator = MachineLimitOffsetPagination()
 
     def list(self, request):
-        serializer = self.serializer_class(Software.objects.all().prefetch_related(), many=True)
+        serializer = self.serializer_class(Software.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('software-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -562,7 +581,7 @@ class EmployeeViewset(viewsets.ViewSet):
     paginator = OsLimitOffsetPagination()
 
     def list(self, request):
-        serializer = self.serializer_class(Employee.objects.all().order_by("first_name"), many=True)
+        serializer = self.serializer_class(Employee.objects.all().order_by("last_name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('employee-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -619,11 +638,11 @@ class EmployeeViewset(viewsets.ViewSet):
         if request.method == 'GET':
             data = request.query_params.dict()
 
-        data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
+        data = {k: v for k, v in data.items() if not k == 'id' and not k == 'pk'  and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
         model = self.queryset.filter(**data)
-        serializer_class = OsSerializer
+        serializer_class = EmployeeSerializer
         serializer = serializer_class(model, many=True)
 
         if model.count() == 0:
@@ -668,6 +687,16 @@ class EmployeeViewset(viewsets.ViewSet):
                 serializer = self.serializer_class(employee)
                 return Response(serializer.data)
         employee.software.add(software)
+        employee.save()
+        serializer = self.serializer_class(employee)
+        return Response(serializer.data)
+
+    @action(methods=['get', 'post'], detail=True)
+    def remove_software(self, request, employee=None):
+        employee = get_object_or_404(self.queryset, employee=employee)
+        software = request.data.get('software', '')
+        software = get_object_or_404(employee.software.all(), software=software)
+        employee.software.remove(software)
         employee.save()
         serializer = self.serializer_class(employee)
         return Response(serializer.data)
