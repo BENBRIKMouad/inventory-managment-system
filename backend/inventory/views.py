@@ -63,7 +63,7 @@ from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 #             return self.request_serializer
 #         if self.request.method == 'DELETE':
 #             return RequestMachineSerializer
-
+cache_time = 2
 
 class IgnoreClientContentNegotiation(BaseContentNegotiation):
     def select_parser(self, request, parsers):
@@ -96,7 +96,10 @@ class ModelViewSet(viewsets.ViewSet):
     lookup_field = "model"
     pagination_class = ModelLimitOffsetPagination
     paginator = ModelLimitOffsetPagination()
+    content_negotiation_class = IgnoreClientContentNegotiation
 
+    @method_decorator(cache_page(cache_time))
+    @method_decorator(vary_on_headers("Authorization",))
     def list(self, request):
         serializer = self.serializer_class(Model.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
@@ -210,6 +213,8 @@ class OsViewset(viewsets.ViewSet):
     pagination_class = OsLimitOffsetPagination
     paginator = OsLimitOffsetPagination()
 
+    @method_decorator(cache_page(cache_time))
+    @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
         serializer = OsSerializer(Os.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
@@ -327,6 +332,8 @@ class MachineViewSet(viewsets.ViewSet):
     pagination_class = MachineLimitOffsetPagination
     paginator = MachineLimitOffsetPagination()
 
+    @method_decorator(cache_page(cache_time))
+    @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
         serializer_class = ResponseMachineSerializer
         serializer = serializer_class(Machine.objects.all().order_by("name"), many=True)
@@ -465,6 +472,8 @@ class SoftwareViewSet(viewsets.ViewSet):
     pagination_class = MachineLimitOffsetPagination
     paginator = MachineLimitOffsetPagination()
 
+    @method_decorator(cache_page(cache_time))
+    @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
         serializer = self.serializer_class(Software.objects.all().order_by("name"), many=True)
         for obj in serializer.data:
@@ -580,6 +589,8 @@ class EmployeeViewset(viewsets.ViewSet):
     pagination_class = OsLimitOffsetPagination
     paginator = OsLimitOffsetPagination()
 
+    @method_decorator(cache_page(cache_time))
+    @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
         serializer = self.serializer_class(Employee.objects.all().order_by("last_name"), many=True)
         for obj in serializer.data:

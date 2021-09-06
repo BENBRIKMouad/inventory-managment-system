@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     count(type) {
-      while (true) {
          switch (type) {
         case "Machines":
           return this.Machines;
@@ -72,7 +71,6 @@ export default {
           return this.Libre;
         default:
           return 0;
-      }
       }
      
     },
