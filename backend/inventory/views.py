@@ -96,7 +96,6 @@ class ModelViewSet(viewsets.ViewSet):
     lookup_field = "model"
     pagination_class = ModelLimitOffsetPagination
     paginator = ModelLimitOffsetPagination()
-    content_negotiation_class = IgnoreClientContentNegotiation
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization",))
