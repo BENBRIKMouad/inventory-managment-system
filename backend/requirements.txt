@@ -1,0 +1,9 @@
+Django
+django-allauth
+django-cors-headers
+django-filter
+django-rest-auth
+django-rest-authtoken
+djangorestframework
+djangorestframework-simplejwt
+psycopg2
