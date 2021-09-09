@@ -6,8 +6,9 @@ set -o nounset
 
 
 
-
+yes "y" | python manage.py makemigrations
 python manage.py migrate
+python manage.py initadmin
 echo "collectstatic"
 python /app/manage.py collectstatic --noinput
 echo "gunicorn"

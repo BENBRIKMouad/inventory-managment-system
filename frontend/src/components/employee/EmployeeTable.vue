@@ -5,7 +5,7 @@
         @click="add()"
         class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
       >
-        Add
+        Ajouter
       </button>
     </div>
 
@@ -62,14 +62,14 @@
        v-if="this.$store.state.employee.previous"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
       >
-           Perv <font-awesome-icon icon="angle-double-left" />
+          <font-awesome-icon icon="angle-double-left" />Précédent
       </button>
       <button
         @click="Next()"
         v-if="this.$store.state.employee.next"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
       >
-        Next <font-awesome-icon icon="angle-double-right" />
+        Suivant <font-awesome-icon icon="angle-double-right" />
       </button>
     </div>
     <div class="h-12"></div>
@@ -114,7 +114,7 @@
               @click="close_modal()"
               class="rounded text-gray-100 px-6 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-4"
             >
-              cancel
+              Annuler
             </button>
           </div>
         </div>
@@ -200,7 +200,7 @@
                 @click="add_software()"
                 class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-700 transition-all duration-200 ml-2"
               >
-                add
+                Ajouter
               </button>
             </div>
           </div>
@@ -209,7 +209,7 @@
               @click="close_modal()"
               class="rounded text-gray-100 px-5 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-2"
             >
-              cancel
+              Annuler
             </button>
           </div>
         </div>
@@ -326,8 +326,8 @@ export default {
     },
     destroy(id) {
       Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Êtes-vous sûr de supprimer cet élement?",
+        text: "Vous ne porrier pas restaurer cet élement!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
@@ -336,7 +336,7 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           this.$store.dispatch("deleteEmployee", id);
-          Swal.fire("Deleted!", "This machine has been deleted.", "success");
+          Swal.fire("Supprimé!", "Cet élement a été supprimer.", "success");
         }
       });
     },

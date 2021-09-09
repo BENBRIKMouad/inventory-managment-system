@@ -5,7 +5,7 @@
         @click="add()"
         class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
       >
-        Add
+        Ajouter
       </button>
     </div>
 
@@ -54,14 +54,14 @@
        v-if="this.$store.state.software.previous"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
       >
-           Perv  <font-awesome-icon icon="angle-double-left" />
+          <font-awesome-icon icon="angle-double-left" /> Précédent
       </button>
       <button
         @click="Next()"
         v-if="this.$store.state.software.next"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
       >
-        Next  <font-awesome-icon icon="angle-double-right" />
+        Suivant  <font-awesome-icon icon="angle-double-right" />
       </button>
     </div>
     <div class="h-12"></div>
@@ -106,7 +106,7 @@
               @click="close_modal()"
               class="rounded text-gray-100 px-6 py-2 bg-red-500 shadow-md hover:shadow-inner hover:bg-red-700 transition-all duration-200 m-4"
             >
-              cancel
+              annuler
             </button>
           </div>
         </div>

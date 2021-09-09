@@ -57,7 +57,7 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     identifier = models.CharField(max_length=55, blank=True)
-    software = models.ManyToManyField(Software, null=True, blank=True)
+    software = models.ManyToManyField(Software, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name

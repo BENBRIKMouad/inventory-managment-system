@@ -4,7 +4,7 @@
       <font-awesome-icon icon="search" class="absolute top-3 ml-3 text-sm" />
       <input
         type="text"
-        placeholder="Search"
+        placeholder="Rechercher"
         v-model="searchq"
         class="
           antialiased
@@ -59,7 +59,7 @@
         "
         @click="filter"
       >
-        filter
+        filtrer
       </button>
     </div>
   </div>

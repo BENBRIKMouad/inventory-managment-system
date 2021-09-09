@@ -16,7 +16,7 @@
           m-2
         "
       >
-        Add
+        Ajouter
       </button>
     </div>
 
@@ -62,14 +62,14 @@
        v-if="this.$store.state.os.previous"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
       >
-           Perv  <font-awesome-icon icon="angle-double-left" />
+        <font-awesome-icon icon="angle-double-left" /> Précédent
       </button>
       <button
         @click="Next()"
         v-if="this.$store.state.os.next"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
       >
-        Next  <font-awesome-icon icon="angle-double-right" />
+        Suivant  <font-awesome-icon icon="angle-double-right" />
       </button>
     </div>
 
@@ -164,7 +164,7 @@
                 m-4
               "
             >
-              cancel
+              annuler
             </button>
           </div>
         </div>
@@ -258,18 +258,18 @@ export default {
     },
     destroy(id) {
       Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Êtes-vous sûr de supprimer cet élement?",
+        text: "Vous ne porrier pas restaurer cet élement!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Oui, supprimer!",
       }).then((result) => {
         if (result.isConfirmed) {
 
           this.$store.dispatch("deleteOs", id);
-          Swal.fire("Deleted!", "This machine has been deleted.", "success");
+          Swal.fire("Supprimé!", "Cet élement a été supprimer.", "success");
         }
       });
     },
