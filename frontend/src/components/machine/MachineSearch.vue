@@ -9,7 +9,7 @@
       />
       <input
         type="text"
-        placeholder="Search"
+        placeholder="Rechercher"
         v-model="searchq"
         class="
           antialiased
@@ -64,7 +64,7 @@
         "
         @click="filter"
       >
-        filter
+        filtrer
       </button>
     </div>
   </div>

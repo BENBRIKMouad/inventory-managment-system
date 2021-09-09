@@ -146,7 +146,8 @@
                 m-4
               "
             >
-              {{ action }}
+              <p v-if="action == 'Edit'">Editer</p>
+              <p v-if="action == 'Add'">Ajouter</p>
             </button>
             <button
               @click="close_modal()"

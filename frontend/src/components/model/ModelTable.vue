@@ -161,7 +161,8 @@
               @click="exec(action)"
               class=" rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-700 transition-all duration-200 m-4"
             >
-              {{ action }}
+              <p v-if="action == 'Edit'">Editer</p>
+              <p v-if="action == 'Add'">Ajouter</p>
             </button>
             <button
               @click="close_modal()"
@@ -265,7 +266,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Oui, supprimer!",
       }).then((result) => {
         if (result.isConfirmed) {
           this.$store.dispatch("deleteModel", id);
