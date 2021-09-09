@@ -1,6 +1,6 @@
 <template>
   <div class="table-auto">
-    <div class="flex justify-end">
+    <div class="flex justify-start">
       <button
         @click="add()"
         class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
@@ -56,13 +56,14 @@
         </td>
       </tr>
     </table>
+
     <div class="relative ">
       <button
         @click="Perv()"
-       v-if="this.$store.state.employee.previous"
+        v-if="this.$store.state.employee.previous"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
       >
-          <font-awesome-icon icon="angle-double-left" />Précédent
+        <font-awesome-icon icon="angle-double-left" />Précédent
       </button>
       <button
         @click="Next()"
@@ -283,8 +284,7 @@ export default {
       this.inputs.forEach((element) => {
         element.value = "";
       });
-      
-     
+
       //show the modal
       this.show = true;
     },
@@ -306,11 +306,13 @@ export default {
       if (filterItems.length == 0)
         this.employeeSoftware.software.push(this.softwareForm[0].value);
     },
-    removeSoftware(software){
+    removeSoftware(software) {
       let employee = this.employeeSoftware.employee;
       let values = { software: software.software, employee: employee };
       this.$store.dispatch("removeSoftwareToEmployee", values);
-      this.employeeSoftware.software = this.employeeSoftware.software.filter(el => el.name+el.version != software.name+software.version)
+      this.employeeSoftware.software = this.employeeSoftware.software.filter(
+        (el) => el.name + el.version != software.name + software.version
+      );
     },
     exec(action) {
       let values = this.inputs.reduce(function(map, obj) {
@@ -333,6 +335,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
+        cancelButtonText: "Annuler",
         confirmButtonText: "Oui, supprimer!",
       }).then((result) => {
         if (result.isConfirmed) {
@@ -358,13 +361,12 @@ export default {
       let software = this.$store.state.software.results;
       return software;
     },
-        Next(){
-      this.$store.dispatch("getSoftware",this.$store.state.employee.next);
+    Next() {
+      this.$store.dispatch("getSoftware", this.$store.state.employee.next);
     },
-    Perv(){
-      this.$store.dispatch("getSoftware",this.$store.state.employee.previous);
-    }
-
+    Perv() {
+      this.$store.dispatch("getSoftware", this.$store.state.employee.previous);
+    },
   },
   mounted() {
     this.$store.dispatch("getEmployee");

@@ -103,7 +103,6 @@ export default {
         ram: this.filterfields.find((el) => el.id === "ram").value,
         stockage: this.filterfields.find((el) => el.id === "stockage").value,
       };
-      console.log(filter);
       this.$store.dispatch("filterMachines", filter);
     },
   },

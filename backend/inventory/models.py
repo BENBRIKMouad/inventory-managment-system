@@ -54,9 +54,9 @@ class Software(models.Model):
 class Employee(models.Model):
     employee = models.CharField(max_length=255, blank=True)
     email = models.EmailField(null=True, blank=True)
-    first_name = models.CharField(max_length=255, blank=True)
-    last_name = models.CharField(max_length=255, blank=True)
-    identifier = models.CharField(max_length=55, blank=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255,)
+    identifier = models.CharField(max_length=55)
     software = models.ManyToManyField(Software, blank=True)
 
     def __str__(self):

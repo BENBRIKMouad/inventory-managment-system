@@ -1,6 +1,6 @@
 <template>
   <div class="table-auto">
-    <div class="flex justify-end">
+    <div class="flex justify-start">
       <button
         @click="add()"
         class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
@@ -8,7 +8,6 @@
         Ajouter
       </button>
     </div>
-
     <table class="container">
       <th
         v-for="header in headers"
@@ -48,20 +47,21 @@
         </td>
       </tr>
     </table>
+
     <div class="relative p-2">
       <button
         @click="Perv()"
-       v-if="this.$store.state.software.previous"
+        v-if="this.$store.state.software.previous"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2  absolute left-0 filter drop-shadow-lg "
       >
-          <font-awesome-icon icon="angle-double-left" /> Précédent
+        <font-awesome-icon icon="angle-double-left" /> Précédent
       </button>
       <button
         @click="Next()"
         v-if="this.$store.state.software.next"
         class="rounded text-gray-100 px-6 py-2 bg-blue-500 shadow-md hover:shadow-inner hover:bg-blue-600 transition-all m-2 justify-self-end absolute right-0 filter drop-shadow-lg"
       >
-        Suivant  <font-awesome-icon icon="angle-double-right" />
+        Suivant <font-awesome-icon icon="angle-double-right" />
       </button>
     </div>
     <div class="h-12"></div>
@@ -198,17 +198,18 @@ export default {
     },
     destroy(id) {
       Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
+        title: "Êtes-vous sûr de supprimer cet élement?",
+        text: "Vous ne porrier pas restaurer cet élement!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
+        cancelButtonText: "Annuler",
         confirmButtonText: "Oui, supprimer!",
       }).then((result) => {
         if (result.isConfirmed) {
           this.$store.dispatch("deleteSoftware", id);
-          Swal.fire("Deleted!", "This machine has been deleted.", "success");
+          Swal.fire("Supprimé!", "Cet élement a été supprimer.", "success");
         }
       });
     },
@@ -221,13 +222,12 @@ export default {
       let software = this.$store.state.software.results;
       return software;
     },
-    Next(){
-      this.$store.dispatch("getSoftware",this.$store.state.software.next);
+    Next() {
+      this.$store.dispatch("getSoftware", this.$store.state.software.next);
     },
-    Perv(){
-      this.$store.dispatch("getSoftware",this.$store.state.software.previous);
-    }
-
+    Perv() {
+      this.$store.dispatch("getSoftware", this.$store.state.software.previous);
+    },
   },
   mounted() {
     this.$store.dispatch("getSoftware");

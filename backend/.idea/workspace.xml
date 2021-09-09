@@ -2,7 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="92412ddf-eb88-4ee2-a45e-201bfae8ca9d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cid/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cid/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/SidePanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/SidePanel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/employee/EmployeeSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/employee/EmployeeSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/machine/MachineSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/machine/MachineSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/model/ModelSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/model/ModelSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/os/OsSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/os/OsSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/components/software/SoftwareSearch.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/components/software/SoftwareSearch.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/store/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../frontend/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/views/Login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,14 +69,14 @@
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="cid.settings" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\benbrik\Documents\GitHub\cid\backend\venv\Scripts\python.exe" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
       <option name="port" value="8000" />
-      <option name="host" value="" />
+      <option name="host" value="192.168.43.88" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
       <option name="runTestServer" value="false" />
@@ -117,6 +129,7 @@
       <workItem from="1630525210436" duration="4826000" />
       <workItem from="1630577360962" duration="21438000" />
       <workItem from="1631004016580" duration="665000" />
+      <workItem from="1631208227693" duration="3036000" />
     </task>
     <servers />
   </component>

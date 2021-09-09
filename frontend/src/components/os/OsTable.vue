@@ -1,20 +1,9 @@
 <template>
   <div class="table-auto">
-    <div class="flex justify-end">
+    <div class="flex justify-start">
       <button
         @click="add()"
-        class="
-          rounded
-          text-gray-100
-          px-6
-          py-2
-          bg-green-500
-          shadow-md
-          hover:shadow-inner
-          hover:bg-green-600
-          transition-all
-          m-2
-        "
+        class="rounded text-gray-100 px-6 py-2 bg-green-500 shadow-md hover:shadow-inner hover:bg-green-600 transition-all m-2"
       >
         Ajouter
       </button>
@@ -265,6 +254,7 @@ export default {
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
+        cancelButtonText: "Annuler",
         confirmButtonText: "Oui, supprimer!",
       }).then((result) => {
         if (result.isConfirmed) {

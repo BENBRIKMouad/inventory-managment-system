@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-let server = "http://127.0.0.1:8000/";
+let server = "http://192.168.43.88:8000/";
 Vue.use(Vuex);
 import Swal from "sweetalert2";
 const defaultHeaders = {
@@ -15,8 +15,9 @@ function fireError(error) {
       const [key, value] = val;
       err += `${key} : ${value}<br>`;
     });
-  else
-    err = "Impossible de se connecter au serveur";
+  else err = "Impossible de se connecter au serveur";
+  err = err.replace("last_name", "nom");
+  err = err.replace("first_name", "prenom");
   Swal.fire({
     title: err,
     icon: "error",
@@ -505,7 +506,7 @@ export default new Vuex.Store({
             .then(() => {
               context.commit("setModelCount", this.state["modelsCount"] - 1);
               context.dispatch("getModelCount");
-              context.dispatch("getModel");
+              context.dispatch("getModels");
             })
             .catch((error) => {
               fireError(error);
@@ -625,8 +626,7 @@ export default new Vuex.Store({
               context.dispatch("getOs");
               context.commit("setModelCount", this.state["modelsCount"] + 1);
             })
-            .catch(function(error) {
-              error = error.replace("name", "nom");
+            .catch((error) => {
               fireError(error);
             });
         })
@@ -760,7 +760,7 @@ export default new Vuex.Store({
             data: {
               email: email,
               first_name: first_name,
-              lst_name: last_name,
+              last_name: last_name,
               identifier: identifier,
             },
             url: `${server}api/inventory/employee/`,
@@ -770,10 +770,7 @@ export default new Vuex.Store({
             })
             .catch(function(error) {
               if (error.response.status == 400) {
-                err = err.replace("last_name", "nom");
-                err = err.replace("first_name", "prenom");
-                fireError(err);
-                context.commit("setEmployee", []);
+                fireError(error);
               }
             });
         })
@@ -936,13 +933,13 @@ export default new Vuex.Store({
 
     //software
 
-    async getSoftware(context,url) {
+    async getSoftware(context, url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
           await axios({
             method: "get",
-            url:url ? url : server + "api/inventory/software/",
+            url: url ? url : server + "api/inventory/software/",
           })
             .then((response) => {
               context.commit("setSoftware", response.data);
@@ -973,7 +970,7 @@ export default new Vuex.Store({
               context.dispatch("getSoftware");
             })
             .catch(function(error) {
-              fireError(err);
+              fireError(error);
             });
         })
         .catch((err) => {

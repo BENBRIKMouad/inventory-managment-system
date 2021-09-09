@@ -28,7 +28,7 @@ SECRET_KEY = env(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 # Application definition
 
@@ -81,7 +81,17 @@ WSGI_APPLICATION = 'cid.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {"default": env.db("DATABASE_URL")}
+#DATABASES = {"default": env.db("DATABASE_URL")}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'inventory',
+        'USER': 'api_client',
+        'PASSWORD': 'Vd157953',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # Password validation

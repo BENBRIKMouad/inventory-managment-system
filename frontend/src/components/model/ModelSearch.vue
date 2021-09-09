@@ -87,7 +87,6 @@ export default {
           map[obj.id] = obj.value;
           return map;
         }, {});
-      console.log(filter);
       this.$store.dispatch("filterModels", filter);
     },
   },

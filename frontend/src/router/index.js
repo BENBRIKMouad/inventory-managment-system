@@ -68,7 +68,6 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  
   routes,
 });
 router.beforeEach((to, from, next) => {
@@ -88,7 +87,6 @@ router.beforeEach((to, from, next) => {
               next();
             })
             .catch((err) => {
-              console.log(err);
               next({ name: "login" });
             });
         });

@@ -67,7 +67,6 @@ export default {
       this.$store.commit("updateStorage",{ access:null, refresh:null})
       localStorage.clear() 
       this.$router.push({ name: 'login' })
-      console.log('log out')
     }
   }
 

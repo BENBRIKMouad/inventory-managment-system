@@ -95,12 +95,9 @@ export default {
           password: this.user.password,
         })
         .then(() => {
-            console.log("yes")
            this.$router.push({ name: 'Main' })
         })
         .catch((err) => {
-          console.log(err);
-          console.log("ss");
           this.incorrectAuth = true;
         });
     },
