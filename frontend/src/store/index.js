@@ -680,7 +680,7 @@ export default new Vuex.Store({
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
-          const { data } = await axios({
+          await axios({
             method: "post",
             url: server + "api/inventory/os/search/",
             data: {
@@ -697,8 +697,9 @@ export default new Vuex.Store({
               }
             });
         })
-        .catch((err) => {
-          fireError(err);
+        .catch((error) => {
+          fireError(error);
+          console.log("ee");
         });
     },
 
@@ -724,8 +725,8 @@ export default new Vuex.Store({
               }
             });
         })
-        .catch((err) => {
-          fireError(err);
+        .catch((error) => {
+          fireError(error);
         });
     },
 

@@ -160,7 +160,7 @@ class ModelViewSet(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
-        model = self.queryset.filter(**data)
+        model = self.queryset.filter(**data).order_by("name")
         serializer_class = ModelSerializer
         serializer = serializer_class(model, many=True)
 
@@ -181,7 +181,7 @@ class ModelViewSet(viewsets.ViewSet):
             query = request.query_params.get('q', '')
         model = self.queryset.filter(
             Q(name__icontains=query) | Q(cpu__icontains=query)
-        )
+        ).order_by("name")
         serializer_class = ModelSerializer
         serializer = serializer_class(model, many=True)
         if model.count() == 0:
@@ -275,7 +275,7 @@ class OsViewset(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
-        model = self.queryset.filter(**data)
+        model = self.queryset.filter(**data).order_by("name")
         serializer_class = OsSerializer
         serializer = serializer_class(model, many=True)
 
@@ -297,7 +297,7 @@ class OsViewset(viewsets.ViewSet):
             query = request.query_params.get('q', '')
         model = self.queryset.filter(
             Q(name__icontains=query) | Q(type__icontains=query)
-        )
+        ).order_by("name")
 
         serializer_class = OsSerializer
         serializer = serializer_class(model, many=True)
@@ -414,7 +414,7 @@ class MachineViewSet(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
-        model = self.queryset.filter(**data)
+        model = self.queryset.filter(**data).order_by("name")
         serializer_class = ResponseMachineSerializer
         serializer = serializer_class(model, many=True)
 
@@ -438,7 +438,7 @@ class MachineViewSet(viewsets.ViewSet):
         model = self.queryset.filter(
             Q(name__icontains=query) | Q(serial_number__icontains=query) | Q(os__type__icontains=query)
             | Q(os__name__icontains=query) | Q(model__name__icontains=query) | Q(reference__icontains=query)
-        )
+        ).order_by("name")
 
         serializer_class = ResponseMachineSerializer
         serializer = serializer_class(model, many=True)
@@ -535,7 +535,7 @@ class SoftwareViewSet(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if not re.match(".*?id.*?", k) and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
-        software = self.queryset.filter(**data)
+        software = self.queryset.filter(**data).order_by("name")
         serializer = SoftwareSerializer(software, many=True)
 
         if software.count() == 0:
@@ -557,7 +557,7 @@ class SoftwareViewSet(viewsets.ViewSet):
 
         software = self.queryset.filter(
             Q(name__icontains=query) | Q(editor__icontains=query) | Q(version__icontains=query)
-        )
+        ).order_by("name")
         serializer_class = SoftwareSerializer
         serializer = serializer_class(software, many=True)
         if software.count() == 0:
@@ -651,7 +651,7 @@ class EmployeeViewset(viewsets.ViewSet):
         data = {k: v for k, v in data.items() if not k == 'id' and not k == 'pk'  and v}
         data = {k: v for k, v in data.items() if [e for e in serializer_fields if e in k]}
 
-        model = self.queryset.filter(**data)
+        model = self.queryset.filter(**data).order_by("last_name")
         serializer_class = EmployeeSerializer
         serializer = serializer_class(model, many=True)
 
@@ -673,7 +673,7 @@ class EmployeeViewset(viewsets.ViewSet):
             query = request.query_params.get('q', '')
         model = self.queryset.filter(
             Q(first_name__icontains=query) | Q(last_name__icontains=query)
-        )
+        ).order_by("last_name")
 
         serializer_class = EmployeeSerializer
         serializer = serializer_class(model, many=True)
