@@ -1,0 +1,46 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  static_volume:
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: inventory-backend-prod
+    depends_on:
+      - postgres
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.production/.postgres
+    volumes:
+      - static_volume:/app/staticfiles
+    command: gunicorn cid.wsgi:application --bind 0.0.0.0:8000 --chdir=/app 
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: inventory-db-prod
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data:Z
+      - production_postgres_data_backups:/backups:z
+    env_file:
+      - ./.envs/.production/.postgres
+  
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/production/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - django
+    volumes:
+      - static_volume:/app/staticfiles

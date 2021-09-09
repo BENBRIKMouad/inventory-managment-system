@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=inventory
+POSTGRES_USER=ZoRFrrlTRrpktjwEhejxHgayMkeaXanW
+POSTGRES_PASSWORD=YNjReLxpz6hfz4VkfQIV9hfNZiwyCEk0EVmCV8CQpIjX1QIg96nu7Mde7iMwRQ4S

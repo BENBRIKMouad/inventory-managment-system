@@ -1,0 +1,46 @@
+version: '3'
+
+volumes:
+  production_postgres_data: {}
+  production_postgres_data_backups: {}
+  static_volume:
+services:
+  django:
+    build:
+      context: ./backend
+      dockerfile: ./compose/production/django/Dockerfile
+    image: inventory-backend-prod
+    depends_on:
+      - postgres
+    env_file:
+      - ./backend/.envs/.local/.django
+      - ./backend/.envs/.production/.postgres
+    volumes:
+      - static_volume:/app/staticfiles
+    command: /start
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+
+  postgres:
+    build:
+      context: ./backend
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: inventory-db-prod
+    volumes:
+      - production_postgres_data:/var/lib/postgresql/data:Z
+      - production_postgres_data_backups:/backups:z
+    env_file:
+      - ./backend/.envs/.production/.postgres
+    ports:
+      - "5432:5432"
+
+  vuejs:
+    build:
+      context: ./frontend
+      dockerfile : ./Dockerfile
+    image: inventory-frontend-prod 
+    ports:
+      - "80:80"
+        
