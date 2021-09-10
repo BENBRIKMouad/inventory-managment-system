@@ -23,6 +23,17 @@ services:
     ports:
       - "8000:8000"
 
+  nginx:
+    build:
+      context: ./backend
+      dockerfile: ./compose/production/nginx/Dockerfile
+    volumes:
+      - static_volume:/app/staticfiles
+    ports:
+      - 1337:80
+    depends_on:
+      - django
+
   postgres:
     build:
       context: ./backend
