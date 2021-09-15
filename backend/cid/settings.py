@@ -81,8 +81,17 @@ WSGI_APPLICATION = 'cid.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-DATABASES = {"default": env.db("DATABASE_URL")}
-
+#DATABASES = {"default": env.db("DATABASE_URL")}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'inventory',
+        'USER': 'api_client',
+        'PASSWORD': 'Vd157953',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # Password validation

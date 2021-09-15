@@ -26,7 +26,13 @@
           {{ el.last_name }} {{ el.first_name }}
         </td>
         <td :class="border">
-          {{ el.email }}
+          {{ el.pole.name }}
+        </td>
+        <td :class="border">
+          {{ el.division.name }}
+        </td>
+        <td :class="border">
+          {{ el.function.name }}
         </td>
         <td :class="border" class="xl:p-2 lg:p-1 md:p-1">
           {{ el.identifier }}
@@ -104,6 +110,67 @@
               </p>
             </div>
           </div>
+
+          <div class="grid lg:grid-cols-2 gap-6 mt-5">
+            <div
+              v-for="select in selects"
+              :key="select.id"
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1"
+            >
+              <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
+                <p>
+                  <label for="name" class="bg-white text-gray-600 px-1"
+                    >{{ select.label }} *</label
+                  >
+                </p>
+              </div>
+              <p>
+                <select
+                  v-if="select.id == 'pole'"
+                  v-model="select.value"
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+                >
+                  <option :value="select.value">{{ select.value }} </option>
+                  <option
+                    v-for="pole in Poles(select.value)"
+                    :key="pole.name"
+                    :value="pole.name"
+                  >
+                    {{ pole.name }}
+                  </option>
+                </select>
+                <select
+                  v-if="select.id == 'division'"
+                  v-model="select.value"
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+                >
+                  <option :value="select.value">{{ select.value }} </option>
+                  <option
+                    v-for="model in Divisions(select.value)"
+                    :key="model.name"
+                    :value="model.name"
+                  >
+                    {{ model.name }}
+                  </option>
+                </select>
+                <select
+                  v-if="select.id == 'function'"
+                  v-model="select.value"
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full"
+                >
+                  <option :value="select.value">{{ select.value }} </option>
+                  <option
+                    v-for="model in Functions(select.value)"
+                    :key="model.name"
+                    :value="model.name"
+                  >
+                    {{ model.name }}
+                  </option>
+                </select>
+              </p>
+            </div>
+          </div>
+
           <div class="mt-6 pt-3">
             <button
               @click="exec(action)"
@@ -238,7 +305,9 @@ export default {
       headers: [
         { title: "#", class: "" },
         { title: "nom", class: "" },
-        { title: "email", class: "" },
+        { title: "pole", class: "" },
+        { title: "division", class: "" },
+        { title: "fonction", class: "" },
         { title: "matricule", class: "" },
         { title: "logiciel", class: "" },
         { title: "actions" },
@@ -256,6 +325,11 @@ export default {
         { id: "email", label: "email", value: "", type: "email" },
         { id: "identifier", label: "matricule", value: "", type: "text" },
       ],
+      selects: [
+        { id: "division", label: "division", value: "" },
+        { id: "function", label: "fonction", value: "" },
+        { id: "pole", label: "pole", value: "" },
+      ],
       softwareForm: [
         { id: "sofrware", label: "logiciel", value: "", type: "text" },
       ],
@@ -272,6 +346,14 @@ export default {
         element.value = employee[element.id];
       });
       //binding value of select form to machine
+      this.selects.forEach((element) => {
+        if (employee[element.id] != null) {
+          element.value = employee[element.id].name;
+        } else {
+          element.value = null;
+        }
+      });
+
       this.id = employee.employee;
       //reemove
 
@@ -284,7 +366,9 @@ export default {
       this.inputs.forEach((element) => {
         element.value = "";
       });
-
+      this.selects.forEach((element) => {
+        element.value = "";
+      });
       //show the modal
       this.show = true;
     },
@@ -315,11 +399,23 @@ export default {
       );
     },
     exec(action) {
-      let values = this.inputs.reduce(function(map, obj) {
+      let poles = this.Poles();
+      let divisions = this.Divisions();
+      let functions = this.Functions();
+
+      let data = this.inputs.concat(this.selects);
+      let values = data.reduce(function(map, obj) {
         map[obj.id] = obj.value;
         return map;
       }, {});
 
+      let pole = poles.find((el) => el.name == values["pole"]);
+      let division = divisions.find((el) => el.name == values["division"]);
+      let _function = functions.find((el) => el.name == values["function"]);
+      values["pole"] = pole ? pole.pole : "";
+      values["division"] = division ? division.division : "";
+      values["function"] = _function ? _function.function : "";
+      values["_function"] = values["function"];
       if (action == "Edit") {
         values["id"] = this.id;
         this.$store.dispatch("updateEmployee", values);
@@ -361,6 +457,30 @@ export default {
       let software = this.$store.state.software.results;
       return software;
     },
+    Divisions(val = null) {
+      let divisions = this.$store.state.divisions;
+      if (val)
+        divisions = divisions.filter(function(el) {
+          return el.name != val;
+        });
+      return divisions;
+    },
+    Poles(val = null) {
+      let poles = this.$store.state.poles;
+      if (val)
+        poles = poles.filter(function(el) {
+          return el.name != val;
+        });
+      return poles;
+    },
+    Functions(val = null) {
+      let functions = this.$store.state.functions;
+      if (val)
+        functions = functions.filter(function(el) {
+          return el.name != val;
+        });
+      return functions;
+    },
     Next() {
       this.$store.dispatch("getSoftware", this.$store.state.employee.next);
     },
@@ -370,9 +490,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("getEmployee");
-    this.$store.dispatch("getModels");
-    this.$store.dispatch("getOs");
     this.$store.dispatch("getSoftware");
+    this.$store.dispatch("getDivisions");
+    this.$store.dispatch("getPoles");
+    this.$store.dispatch("getFunctions");
   },
   computed: {
     machines() {

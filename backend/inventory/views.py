@@ -65,6 +65,7 @@ from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 #             return RequestMachineSerializer
 cache_time = 2
 
+
 class IgnoreClientContentNegotiation(BaseContentNegotiation):
     def select_parser(self, request, parsers):
         """
@@ -570,6 +571,30 @@ class SoftwareViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
 
+class PoleViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing user instances.
+    """
+    serializer_class = PoleSerializer
+    queryset = Pole.objects.all()
+
+
+class DivisionViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing user instances.
+    """
+    serializer_class = DivisionSerializer
+    queryset = Division.objects.all()
+
+
+class FunctionViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for viewing and editing user instances.
+    """
+    serializer_class = FunctionSerializer
+    queryset = Function.objects.all()
+
+
 class EmployeeViewset(viewsets.ViewSet):
     """
           Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **OS**
@@ -582,7 +607,7 @@ class EmployeeViewset(viewsets.ViewSet):
 
        """
     permission_classes = [IsAuthenticated]
-    serializer_class = EmployeeSerializer
+    serializer_class = RequestEmployeeSerializer
     queryset = Employee.objects.all()
     lookup_field = "employee"
     pagination_class = OsLimitOffsetPagination
@@ -591,7 +616,8 @@ class EmployeeViewset(viewsets.ViewSet):
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
-        serializer = self.serializer_class(Employee.objects.all().order_by("last_name"), many=True)
+        serializer_class = EmployeeSerializer
+        serializer = serializer_class(Employee.objects.all().order_by("last_name"), many=True)
         for obj in serializer.data:
             obj['url'] = reverse('employee-detail', args=[obj[self.lookup_field]], request=request)
 
@@ -601,8 +627,18 @@ class EmployeeViewset(viewsets.ViewSet):
         return Response(serializer.data)
 
     def create(self, request):
+
+        if request.data.get("division"):
+            request.data["division"] = get_object_or_404(Division, division=request.data["division"]).id
+        if request.data.get("pole"):
+            request.data["pole"] = get_object_or_404(Pole, pole=request.data["pole"]).id
+        if request.data.get("function"):
+            request.data["function"] = get_object_or_404(Function, function=request.data["function"]).id
+
         data = request.data
+        print(data)
         serializer = self.serializer_class(data=data)
+
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
@@ -703,10 +739,11 @@ class EmployeeViewset(viewsets.ViewSet):
 
     @action(methods=['get', 'post'], detail=True)
     def remove_software(self, request, employee=None):
+        serializer_class = EmployeeSerializer
         employee = get_object_or_404(self.queryset, employee=employee)
         software = request.data.get('software', '')
         software = get_object_or_404(employee.software.all(), software=software)
         employee.software.remove(software)
         employee.save()
-        serializer = self.serializer_class(employee)
+        serializer = serializer_class(employee)
         return Response(serializer.data)

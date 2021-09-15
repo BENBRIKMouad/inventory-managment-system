@@ -3,6 +3,34 @@
   <component name="ChangeListManager">
     <list default="true" id="92412ddf-eb88-4ee2-a45e-201bfae8ca9d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cid/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cid/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/migrations/0001_initial.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0002_auto_20210727_1148.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0003_auto_20210727_1236.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0004_auto_20210727_1250.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0005_alter_model_name.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0006_alter_os_unique_together.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0007_auto_20210826_0922.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0008_machine_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0009_auto_20210831_1417.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0010_remove_machine_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0011_delete_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0012_machine_user.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0013_auto_20210831_1426.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0014_auto_20210831_1547.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0015_alter_employee_identifier.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0016_software.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0017_alter_software_employee.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0018_auto_20210901_1306.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0019_auto_20210901_1453.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0020_rename_user_machine_employee.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0021_alter_machine_employee.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0022_remove_machine_assigned.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/migrations/0023_auto_20210909_2016.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventory/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../frontend/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../frontend/src/store/index.js" afterDir="false" />
     </list>
@@ -66,9 +94,9 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="launchJavascriptDebuger" value="false" />
       <option name="port" value="8000" />
-      <option name="host" value="192.168.43.88" />
+      <option name="host" value="" />
       <option name="additionalOptions" value="" />
-      <option name="browserUrl" value="" />
+      <option name="browserUrl" value="http://127.0.0.1:8000/api/inventory" />
       <option name="runTestServer" value="false" />
       <option name="runNoReload" value="false" />
       <option name="useCustomRunCommand" value="false" />
@@ -120,6 +148,7 @@
       <workItem from="1630577360962" duration="21438000" />
       <workItem from="1631004016580" duration="665000" />
       <workItem from="1631208227693" duration="3171000" />
+      <workItem from="1631609332612" duration="15391000" />
     </task>
     <servers />
   </component>

@@ -51,12 +51,54 @@ class Software(models.Model):
         super(Software, self).save(*args, **kwargs)
 
 
+class Pole(models.Model):
+    pole = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.pole = uuid.uuid4().hex.__str__()
+        super(Pole, self).save(*args, **kwargs)
+
+
+class Division(models.Model):
+    division = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.division = uuid.uuid4().hex.__str__()
+        super(Division, self).save(*args, **kwargs)
+
+
+class Function(models.Model):
+    function = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.function = uuid.uuid4().hex.__str__()
+        super(Function, self).save(*args, **kwargs)
+
+
 class Employee(models.Model):
     employee = models.CharField(max_length=255, blank=True)
     email = models.EmailField(null=True, blank=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255,)
     identifier = models.CharField(max_length=55)
+    pole = models.ForeignKey(Pole, on_delete=models.CASCADE)
+    division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    function = models.ForeignKey(Function, on_delete=models.CASCADE)
     software = models.ManyToManyField(Software, blank=True)
 
     def __str__(self):

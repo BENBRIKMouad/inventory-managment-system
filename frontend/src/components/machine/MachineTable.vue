@@ -121,30 +121,18 @@
             <div
               v-for="select in selects"
               :key="select.id"
-              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1
-              "
-            >
+              class="border focus-within:border-blue-500 focus-within:text-blue-500 transition-all duration-500 relative rounded p-1">
               <div class="-mt-4 absolute tracking-wider px-1 uppercase text-xs">
                 <p>
                   <label for="name" class="bg-white text-gray-600 px-1"
-                    >{{ select.label }} *</label
-                  >
+                    >{{ select.label }} *</label>
                 </p>
               </div>
               <p>
                 <select
                   v-if="select.id == 'model'"
                   v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
-                >
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full">
                   <option :value="select.value">{{ select.value }}</option>
                   <option
                     v-for="model in models(select.value)"
@@ -157,16 +145,7 @@
                 <select
                   v-else-if="select.id == 'os'"
                   v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
-                >
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full">
                   <option :value="select.value">{{ select.value }}</option>
                   <option
                     v-for="item in os(select.value)"
@@ -179,16 +158,7 @@
                 <select
                   v-else
                   v-model="select.value"
-                  class="
-                    py-1
-                    px-1
-                    text-gray-900
-                    outline-none
-                    block
-                    h-full
-                    w-full
-                  "
-                >
+                  class="py-1 px-1 text-gray-900 outline-none block h-full w-full">
                   <option>
                     
                   </option>

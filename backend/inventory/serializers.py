@@ -26,12 +26,42 @@ class FilterSoftwareSerializer(serializers.Serializer):
     name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='name')
 
 
+class PoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pole
+        fields = ('name', 'pole')
+
+
+class DivisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Division
+        fields = ('name', 'division')
+
+
+class FunctionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Function
+        fields = ('name', 'function')
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
     software = SoftwareSerializer(many=True, required=False)
+    pole = PoleSerializer(many=False)
+    division = DivisionSerializer(many=False)
+    function = FunctionSerializer(many=False)
 
     class Meta:
         model = Employee
-        fields = ('employee', 'email', 'first_name', 'last_name', 'identifier', 'software')
+        fields = ('employee', 'email', 'first_name', 'last_name', 'identifier', 'division', 'function', 'pole',
+                  'software')
+
+
+class RequestEmployeeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Employee
+        fields = ('employee', 'email', 'first_name', 'last_name', 'identifier', 'division', 'function', 'pole',
+                  'software')
 
 
 class SoftwareEmployeeSerializer(serializers.ModelSerializer):

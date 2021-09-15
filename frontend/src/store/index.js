@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-let server = "http://192.168.43.88:8000/";
+let server = "http://127.0.0.1:8000/";
 Vue.use(Vuex);
 import Swal from "sweetalert2";
 const defaultHeaders = {
@@ -55,6 +55,9 @@ export default new Vuex.Store({
     refreshToken: null,
     employee: "",
     software: "",
+    poles: "",
+    divisions: "",
+    functions: "",
   },
 
   getters: {
@@ -106,6 +109,15 @@ export default new Vuex.Store({
       state.accessToken = access;
       localStorage.setItem("token", access);
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+    },
+    setPoles(state, data) {
+      state.poles = data;
+    },
+    setDivisions(state, data) {
+      state.divisions = data;
+    },
+    setFunctions(state, data) {
+      state.functions = data;
     },
   },
 
@@ -752,7 +764,10 @@ export default new Vuex.Store({
         });
     },
 
-    async addEmployee(context, { email, first_name, last_name, identifier }) {
+    async addEmployee(
+      context,
+      { email, first_name, last_name, identifier, division, pole, _function }
+    ) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -763,6 +778,9 @@ export default new Vuex.Store({
               first_name: first_name,
               last_name: last_name,
               identifier: identifier,
+              division: division,
+              pole: pole,
+              function: _function,
             },
             url: `${server}api/inventory/employee/`,
           })
@@ -782,7 +800,16 @@ export default new Vuex.Store({
 
     async updateEmployee(
       context,
-      { id, email, first_name, last_name, identifier }
+      {
+        id,
+        email,
+        first_name,
+        last_name,
+        identifier,
+        division,
+        pole,
+        _function,
+      }
     ) {
       context
         .dispatch("verifyRefreshToken")
@@ -794,6 +821,9 @@ export default new Vuex.Store({
               first_name: first_name,
               last_name: last_name,
               identifier: identifier,
+              division: division,
+              pole: pole,
+              function: _function,
             },
             url: `${server}api/inventory/employee/${id}/`,
           }).catch(function(error) {
@@ -1068,6 +1098,69 @@ export default new Vuex.Store({
                 context.commit("setSoftware", []);
                 fireNotFound();
               }
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    //poles
+    async getPoles(context) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: server + "api/inventory/pole/",
+          })
+            .then((response) => {
+              context.commit("setPoles", response.data);
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    //divisions
+    async getDivisions(context) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: server + "api/inventory/division/",
+          })
+            .then((response) => {
+              context.commit("setDivisions", response.data);
+            })
+            .catch(function(error) {
+              fireError(error);
+            });
+        })
+        .catch((err) => {
+          fireError(err);
+        });
+    },
+
+    //functions
+    async getFunctions(context) {
+      context
+        .dispatch("verifyRefreshToken")
+        .then(async () => {
+          await axios({
+            method: "get",
+            url: server + "api/inventory/function/",
+          })
+            .then((response) => {
+              context.commit("setFunctions", response.data);
+            })
+            .catch(function(error) {
+              fireError(error);
             });
         })
         .catch((err) => {
