@@ -30,7 +30,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
     ports:
-      - 1337:80
+      - 1337:1337
     depends_on:
       - django
 
