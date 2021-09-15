@@ -80,7 +80,7 @@ class IgnoreClientContentNegotiation(BaseContentNegotiation):
         return (renderers[0], renderers[0].media_type)
 
 
-class ModelViewSet(viewsets.ViewSet):
+class ModelViewSet(viewsets.ModelViewSet):
     """
           Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **Model**
 
@@ -93,21 +93,18 @@ class ModelViewSet(viewsets.ViewSet):
        """
     permission_classes = [IsAuthenticated]
     serializer_class = ModelSerializer
-    queryset = Model.objects.all()
+    queryset = Model.objects.all().order_by("name")
     lookup_field = "model"
-    pagination_class = ModelLimitOffsetPagination
-    paginator = ModelLimitOffsetPagination()
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization",))
     def list(self, request):
-        serializer = self.serializer_class(Model.objects.all().order_by("name"), many=True)
-        for obj in serializer.data:
-            obj['url'] = reverse('model-detail', args=[obj[self.lookup_field]], request=request)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = self.get_serializer(page, many=True)
             return self.paginator.get_paginated_response(page)
+        serializer = self.get_serializer(page, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -119,26 +116,26 @@ class ModelViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, model=None):
+    def retrieve(self, request, model=None, **kwargs):
         model = get_object_or_404(self.queryset, model=model)
         serializer = self.serializer_class(model)
         return Response(serializer.data)
 
-    def update(self, request, model=None):
+    def update(self, request, model=None, **kwargs):
         instance = self.queryset.get(model=model)
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def partial_update(self, request, model=None):
+    def partial_update(self, request, model=None, **kwargs):
         instance = self.queryset.get(model=model)
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def destroy(self, request, model=None):
+    def destroy(self, request, model=None, **kwargs):
         instance = self.queryset.get(model=model)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -195,7 +192,7 @@ class ModelViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
 
-class OsViewset(viewsets.ViewSet):
+class OsViewset(viewsets.ModelViewSet):
     """
           Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **OS**
 
@@ -210,19 +207,16 @@ class OsViewset(viewsets.ViewSet):
     serializer_class = OsSerializer
     queryset = Os.objects.all()
     lookup_field = "os"
-    pagination_class = OsLimitOffsetPagination
-    paginator = OsLimitOffsetPagination()
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
-        serializer = OsSerializer(Os.objects.all().order_by("name"), many=True)
-        for obj in serializer.data:
-            obj['url'] = reverse('os-detail', args=[obj[self.lookup_field]], request=request)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = self.get_serializer(page, many=True)
             return self.paginator.get_paginated_response(page)
+        serializer = self.get_serializer(page, many=True)
         return Response(serializer.data)
 
     def create(self, request):
@@ -234,26 +228,26 @@ class OsViewset(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, os=None):
+    def retrieve(self, request, os=None, **kwargs):
         model = get_object_or_404(self.queryset, os=os)
         serializer = self.serializer_class(model)
         return Response(serializer.data)
 
-    def update(self, request, os=None):
+    def update(self, request, os=None, **kwargs):
         instance = self.queryset.get(os=os)
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def partial_update(self, request, os=None):
+    def partial_update(self, request, os=None, **kwargs):
         instance = self.queryset.get(os=os)
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def destroy(self, request, os=None):
+    def destroy(self, request, os=None, **kwargs):
         instance = self.queryset.get(os=os)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -313,7 +307,7 @@ class OsViewset(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
 
-class MachineViewSet(viewsets.ViewSet):
+class MachineViewSet(viewsets.ModelViewSet):
     """
        Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **Machines**
 
@@ -329,20 +323,16 @@ class MachineViewSet(viewsets.ViewSet):
     serializer_class = RequestMachineSerializer
     queryset = Machine.objects.all().prefetch_related()
     lookup_field = "machine"
-    pagination_class = MachineLimitOffsetPagination
-    paginator = MachineLimitOffsetPagination()
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
-        serializer_class = ResponseMachineSerializer
-        serializer = serializer_class(Machine.objects.all().order_by("name"), many=True)
-        for obj in serializer.data:
-            obj['url'] = reverse('machine-detail', args=[obj[self.lookup_field]], request=request)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = self.get_serializer(page, many=True)
             return self.paginator.get_paginated_response(page)
+        serializer = self.get_serializer(page, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -362,13 +352,13 @@ class MachineViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, machine=None):
+    def retrieve(self, request, machine=None, **kwargs):
         serializer_class = ResponseMachineSerializer
         model = get_object_or_404(self.queryset, machine=machine)
         serializer = serializer_class(model)
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
-    def update(self, request, machine=None):
+    def update(self, request, machine=None, **kwargs):
         instance = get_object_or_404(Machine,machine=machine)
         if request.data.get("model"):
             request.data["model"] = get_object_or_404(Model, model=request.data["model"]).id
@@ -379,7 +369,7 @@ class MachineViewSet(viewsets.ViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def partial_update(self, request, machine=None):
+    def partial_update(self, request, machine=None, **kwargs):
         instance = get_object_or_404(Machine,machine=machine)
         if request.data.get("model"):
             request.data["model"] = get_object_or_404(Model,model=request.data["model"]).id
@@ -392,7 +382,7 @@ class MachineViewSet(viewsets.ViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def destroy(self, request, machine=None):
+    def destroy(self, request, machine=None, **kwargs):
         instance = self.queryset.get(machine=machine)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -454,7 +444,7 @@ class MachineViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
 
-class SoftwareViewSet(viewsets.ViewSet):
+class SoftwareViewSet(viewsets.ModelViewSet):
     """
        Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **Machines**
 
@@ -467,21 +457,19 @@ class SoftwareViewSet(viewsets.ViewSet):
     """
     permission_classes = [IsAuthenticated]
     serializer_class = SoftwareSerializer
-    queryset = Software.objects.all().prefetch_related()
+    queryset = Software.objects.all().order_by("name")
     lookup_field = "software"
-    pagination_class = MachineLimitOffsetPagination
-    paginator = MachineLimitOffsetPagination()
+    pagination_class = NoCountPageNumberPagination
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
-        serializer = self.serializer_class(Software.objects.all().order_by("name"), many=True)
-        for obj in serializer.data:
-            obj['url'] = reverse('software-detail', args=[obj[self.lookup_field]], request=request)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         if page is not None:
+            serializer = self.get_serializer(page, many=True)
             return self.paginator.get_paginated_response(page)
+        serializer = self.get_serializer(page, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -494,26 +482,26 @@ class SoftwareViewSet(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, software=None):
+    def retrieve(self, request, software=None, **kwargs):
         software = get_object_or_404(self.queryset, software=software)
         serializer = self.serializer_class(software)
         return Response(serializer.data, status=status.HTTP_302_FOUND)
 
-    def update(self, request, software=None):
+    def update(self, request, software=None, **kwargs):
         instance = self.queryset.get(software=software)
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def partial_update(self, request, software=None):
+    def partial_update(self, request, software=None, **kwargs):
         instance = self.queryset.get(software=software)
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def destroy(self, request, software=None):
+    def destroy(self, request, software=None, **kwargs):
         instance = self.queryset.get(software=software)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -577,7 +565,7 @@ class PoleViewSet(viewsets.ModelViewSet):
     """
     serializer_class = PoleSerializer
     queryset = Pole.objects.all()
-
+    pagination_class = None
 
 class DivisionViewSet(viewsets.ModelViewSet):
     """
@@ -585,7 +573,7 @@ class DivisionViewSet(viewsets.ModelViewSet):
     """
     serializer_class = DivisionSerializer
     queryset = Division.objects.all()
-
+    pagination_class = None
 
 class FunctionViewSet(viewsets.ModelViewSet):
     """
@@ -593,9 +581,10 @@ class FunctionViewSet(viewsets.ModelViewSet):
     """
     serializer_class = FunctionSerializer
     queryset = Function.objects.all()
+    pagination_class = None
 
 
-class EmployeeViewset(viewsets.ViewSet):
+class EmployeeViewset(viewsets.ModelViewSet):
     """
           Provide the option to list,create,retrieve,update,partial update,destroy,search,filter **OS**
 
@@ -608,25 +597,23 @@ class EmployeeViewset(viewsets.ViewSet):
        """
     permission_classes = [IsAuthenticated]
     serializer_class = RequestEmployeeSerializer
-    queryset = Employee.objects.all()
+    queryset = Employee.objects.all().order_by("last_name")
     lookup_field = "employee"
-    pagination_class = OsLimitOffsetPagination
-    paginator = OsLimitOffsetPagination()
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
     def list(self, request):
         serializer_class = EmployeeSerializer
-        serializer = serializer_class(Employee.objects.all().order_by("last_name"), many=True)
-        for obj in serializer.data:
-            obj['url'] = reverse('employee-detail', args=[obj[self.lookup_field]], request=request)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
         if page is not None:
-            return self.paginator.get_paginated_response(page)
+            serializer = serializer_class(page, many=True)
+            resp = self.paginator.get_paginated_response(serializer.data)
+            return resp
+        serializer = serializer_class(queryset, many=True)
         return Response(serializer.data)
 
-    def create(self, request):
+    def create(self, request, **kwargs):
 
         if request.data.get("division"):
             request.data["division"] = get_object_or_404(Division, division=request.data["division"]).id
@@ -644,19 +631,19 @@ class EmployeeViewset(viewsets.ViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def retrieve(self, request, employee=None):
+    def retrieve(self, request, employee=None, **kwargs):
         employee = get_object_or_404(self.queryset, employee=employee)
         serializer = self.serializer_class(employee)
         return Response(serializer.data)
 
-    def update(self, request, employee=None):
+    def update(self, request, employee=None, **kwargs):
         instance = self.queryset.get(employee=employee)
         serializer = self.serializer_class(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def partial_update(self, request, employee=None):
+    def partial_update(self, request, employee=None, **kwargs):
         if request.data.get("division"):
             request.data["division"] = get_object_or_404(Division, division=request.data["division"]).id
         if request.data.get("pole"):
@@ -670,7 +657,7 @@ class EmployeeViewset(viewsets.ViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
-    def destroy(self, request, employee=None):
+    def destroy(self, request, employee=None, **kwargs):
         instance = self.queryset.get(employee=employee)
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

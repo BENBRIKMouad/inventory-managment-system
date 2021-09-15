@@ -111,8 +111,8 @@ class Employee(models.Model):
 
 
 class Machine(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, unique=True)
-    machine = models.CharField(max_length=255, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+    machine = models.CharField(max_length=255, blank=True, unique=True)
     name = models.CharField(max_length=120)
     serial_number = models.CharField(max_length=255)
     reference = models.CharField(max_length=255)
