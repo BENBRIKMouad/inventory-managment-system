@@ -219,13 +219,13 @@ export default new Vuex.Store({
       });
     },
 
-    async getMachines(context) {
+    async getMachines(context,url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
           await axios({
             method: "get",
-            url: `${server}api/inventory/machine/`,
+            url: url ? url : `${server}api/inventory/machine/`,
           })
             .then((response) => {
               context.commit("setMachines", response.data);
@@ -440,13 +440,13 @@ export default new Vuex.Store({
 
     //models
 
-    async getModels(context) {
+    async getModels(context,url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
           await axios({
             method: "get",
-            url: server + "api/inventory/model/",
+            url: url ? url : server + "api/inventory/model/",
           }).then((response) => {
             context.commit("setModels", response.data);
           });
@@ -602,13 +602,13 @@ export default new Vuex.Store({
 
     //os
 
-    async getOs(context) {
+    async getOs(context,url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
           await axios({
             method: "get",
-            url: server + "api/inventory/os/",
+            url: url ? url : server + "api/inventory/os/",
           })
             .then((response) => {
               context.commit("setOs", response.data);
@@ -744,13 +744,13 @@ export default new Vuex.Store({
 
     //employee
 
-    async getEmployee(context) {
+    async getEmployee(context,url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
           await axios({
             method: "get",
-            url: server + "api/inventory/employee/",
+            url: url ? url : server + "api/inventory/employee/",
           })
             .then((response) => {
               context.commit("setEmployee", response.data);

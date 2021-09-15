@@ -482,10 +482,10 @@ export default {
       return functions;
     },
     Next() {
-      this.$store.dispatch("getSoftware", this.$store.state.employee.next);
+      this.$store.dispatch("getEmployee", this.$store.state.employee.next);
     },
     Perv() {
-      this.$store.dispatch("getSoftware", this.$store.state.employee.previous);
+      this.$store.dispatch("getEmployee", this.$store.state.employee.previous);
     },
   },
   mounted() {

@@ -368,10 +368,10 @@ export default {
       return employee;
     },
     Next(){
-      this.$store.dispatch("getSoftware",this.$store.state.machine.next);
+      this.$store.dispatch("getMachines",this.$store.state.machine.next);
     },
     Perv(){
-      this.$store.dispatch("getSoftware",this.$store.state.machine.previous);
+      this.$store.dispatch("getMachines",this.$store.state.machine.previous);
     }
 
   },

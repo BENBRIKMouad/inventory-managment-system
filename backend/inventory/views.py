@@ -636,7 +636,6 @@ class EmployeeViewset(viewsets.ViewSet):
             request.data["function"] = get_object_or_404(Function, function=request.data["function"]).id
 
         data = request.data
-        print(data)
         serializer = self.serializer_class(data=data)
 
         if serializer.is_valid():
@@ -658,6 +657,13 @@ class EmployeeViewset(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
     def partial_update(self, request, employee=None):
+        if request.data.get("division"):
+            request.data["division"] = get_object_or_404(Division, division=request.data["division"]).id
+        if request.data.get("pole"):
+            request.data["pole"] = get_object_or_404(Pole, pole=request.data["pole"]).id
+        if request.data.get("function"):
+            request.data["function"] = get_object_or_404(Function, function=request.data["function"]).id
+
         instance = self.queryset.get(employee=employee)
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)

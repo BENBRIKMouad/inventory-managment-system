@@ -20,7 +20,7 @@ class Model(models.Model):
 
 
 class Os(models.Model):
-    os = models.CharField(max_length=120, blank=True)
+    os = models.CharField(max_length=120, blank=True, unique=True)
     name = models.CharField(max_length=120)
     type = models.CharField(max_length=120)
 
@@ -37,7 +37,7 @@ class Os(models.Model):
 
 
 class Software(models.Model):
-    software = models.CharField(max_length=255, blank=True)
+    software = models.CharField(max_length=255, blank=True, unique=True)
     name = models.CharField(max_length=255)
     editor = models.CharField(max_length=255)
     version = models.CharField(max_length=255)
@@ -52,8 +52,8 @@ class Software(models.Model):
 
 
 class Pole(models.Model):
-    pole = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255)
+    pole = models.CharField(max_length=255, blank=True, unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -65,8 +65,8 @@ class Pole(models.Model):
 
 
 class Division(models.Model):
-    division = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255)
+    division = models.CharField(max_length=255, blank=True, unique=True)
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -78,8 +78,8 @@ class Division(models.Model):
 
 
 class Function(models.Model):
-    function = models.CharField(max_length=255, blank=True)
-    name = models.CharField(max_length=255, blank=True)
+    function = models.CharField(max_length=255, blank=True, unique=True)
+    name = models.CharField(max_length=255, blank=True, unique=True)
 
     def __str__(self):
         return self.name
@@ -91,7 +91,7 @@ class Function(models.Model):
 
 
 class Employee(models.Model):
-    employee = models.CharField(max_length=255, blank=True)
+    employee = models.CharField(max_length=255, blank=True, unique=True)
     email = models.EmailField(null=True, blank=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255,)
@@ -111,7 +111,7 @@ class Employee(models.Model):
 
 
 class Machine(models.Model):
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True, unique=True)
     machine = models.CharField(max_length=255, blank=True)
     name = models.CharField(max_length=120)
     serial_number = models.CharField(max_length=255)

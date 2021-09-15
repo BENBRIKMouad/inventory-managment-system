@@ -276,10 +276,10 @@ export default {
       return models;
     },
     Next(){
-      this.$store.dispatch("getSoftware",this.$store.state.models.next);
+      this.$store.dispatch("getModels",this.$store.state.models.next);
     },
     Perv(){
-      this.$store.dispatch("getSoftware",this.$store.state.models.previous);
+      this.$store.dispatch("getModels",this.$store.state.models.previous);
     }
   },
   mounted() {

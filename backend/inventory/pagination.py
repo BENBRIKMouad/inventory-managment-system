@@ -5,15 +5,12 @@ from rest_framework.pagination import (
 
 
 class MachineLimitOffsetPagination(LimitOffsetPagination):
-    max_limit = 20
-    default_limit = 10
+    default_limit = 20
 
 
 class ModelLimitOffsetPagination(LimitOffsetPagination):
-    max_limit = 30
-    default_limit = 25
+    default_limit = 20
 
 
 class OsLimitOffsetPagination(LimitOffsetPagination):
-    max_limit = 10
-    default_limit = 5
+    default_limit = 20

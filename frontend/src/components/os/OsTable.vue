@@ -283,10 +283,10 @@ export default {
       return os;
     },
     Next(){
-      this.$store.dispatch("getSoftware",this.$store.state.os.next);
+      this.$store.dispatch("getOs",this.$store.state.os.next);
     },
     Perv(){
-      this.$store.dispatch("getSoftware",this.$store.state.os.previous);
+      this.$store.dispatch("getOs",this.$store.state.os.previous);
     }
   },
   mounted() {
