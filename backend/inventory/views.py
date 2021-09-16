@@ -567,6 +567,7 @@ class PoleViewSet(viewsets.ModelViewSet):
     queryset = Pole.objects.all()
     pagination_class = None
 
+
 class DivisionViewSet(viewsets.ModelViewSet):
     """
     A viewset for viewing and editing user instances.
@@ -574,6 +575,7 @@ class DivisionViewSet(viewsets.ModelViewSet):
     serializer_class = DivisionSerializer
     queryset = Division.objects.all()
     pagination_class = None
+
 
 class FunctionViewSet(viewsets.ModelViewSet):
     """
@@ -602,7 +604,7 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
     @method_decorator(cache_page(cache_time))
     @method_decorator(vary_on_headers("Authorization", ))
-    def list(self, request):
+    def list(self, request, **kwargs):
         serializer_class = EmployeeSerializer
         queryset = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)

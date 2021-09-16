@@ -4,9 +4,6 @@
     <list default="true" id="92412ddf-eb88-4ee2-a45e-201bfae8ca9d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cid/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/cid/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventory/pagination.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/pagination.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventory/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/inventory/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +55,7 @@
       <recent name="C:\Users\benbrik\Documents\GitHub\cid\backend" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.pop">
+  <component name="RunManager" selected="Django Server.run">
     <configuration name="pop" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="cid" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -186,7 +183,8 @@
       <workItem from="1631609332612" duration="15391000" />
       <workItem from="1631694844008" duration="85000" />
       <workItem from="1631695439305" duration="11306000" />
-      <workItem from="1631725078646" duration="10418000" />
+      <workItem from="1631725078646" duration="14575000" />
+      <workItem from="1631818839693" duration="1880000" />
     </task>
     <servers />
   </component>
