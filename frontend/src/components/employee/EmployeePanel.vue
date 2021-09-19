@@ -1,5 +1,8 @@
 <template>
-   <div class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center ">
+  <div
+    class="w-full h-full py-2 xl:px-8 lg:px-5 px-2 overflow-y-scroll items-center  transition-all duration-200"
+    id="container"
+  >
     <employee-search></employee-search>
     <dash-board></dash-board>
     <div class="">
@@ -25,8 +28,9 @@ export default {
     DashBoard,
   },
   mounted() {},
+  methods: {
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

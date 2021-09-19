@@ -275,11 +275,16 @@ export default {
         });
       return models;
     },
+    scrollToTop: function() {
+        var container = document.getElementById("container").scroll({ top: 0, behavior: 'smooth' });
+    },
     Next(){
       this.$store.dispatch("getModels",this.$store.state.models.next);
+      this.scrollToTop()
     },
     Perv(){
       this.$store.dispatch("getModels",this.$store.state.models.previous);
+      this.scrollToTop()
     }
   },
   mounted() {

@@ -367,11 +367,16 @@ export default {
       });
       return employee;
     },
+    scrollToTop: function() {
+        var container = document.getElementById("container").scroll({ top: 0, behavior: 'smooth' });
+    },
     Next(){
       this.$store.dispatch("getMachines",this.$store.state.machine.next);
+      this.scrollToTop()
     },
     Perv(){
       this.$store.dispatch("getMachines",this.$store.state.machine.previous);
+      this.scrollToTop()
     }
 
   },
