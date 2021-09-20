@@ -13,7 +13,7 @@ function_url = api_url + 'function/'
 employee_url = api_url + 'employee/'
 
 cwd = os.getcwd()
-data_file = 'bd users(434).xlsx'
+data_file = 'bd users.xlsx'
 wb = load_workbook(data_file)
 employee_sheet = wb['Users']
 
