@@ -74,6 +74,9 @@ export default {
       filterfields: [
         { id: "first_name", placeholder: "prenom", value: "", type: "text" },
         { id: "last_name", placeholder: "nom", value: "" , type: "text"},
+        { id: "pole", placeholder: "pole", value: "" , type: "text"},
+        { id: "division", placeholder: "division", value: "" , type: "text"},
+        { id: "_function", placeholder: "founction", value: "" , type: "text"},
         { id: "identifier", placeholder: "matricule", value: "" , type: "text"},
       ],
     };

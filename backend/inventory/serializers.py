@@ -83,6 +83,9 @@ class FilterEmployeeSerializer(serializers.Serializer):
     first_name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
     last_name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
     identifier__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    pole__name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    division__name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
+    function__name__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
     software__icontains = serializers.CharField(required=False, allow_blank=True, max_length=100, label='type')
 
 

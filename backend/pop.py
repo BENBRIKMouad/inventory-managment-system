@@ -6,7 +6,7 @@ import requests
 import json
 from openpyxl import load_workbook
 
-api_url = 'http://127.0.0.1:8000/api/inventory/'
+api_url = 'http://10.0.0.128:1337/api/inventory/'
 pole_url = api_url + 'pole/'
 division_url = api_url + 'division/'
 function_url = api_url + 'function/'
@@ -17,7 +17,7 @@ data_file = 'bd users.xlsx'
 wb = load_workbook(data_file)
 employee_sheet = wb['Users']
 
-token = 'Bearer ' + requests.post('http://127.0.0.1:8000/auth/login/', {
+token = 'Bearer ' + requests.post('http://10.0.0.128:1337/auth/login/', {
     'username': 'admin',
     'password': 'admin',
 }).json()['access_token']
@@ -82,7 +82,7 @@ def pop_employee():
                     'division': get_id(divisions, division.value),
                     'function': get_id(functions, function.value)
                 }
-                resp = requests.post('http://127.0.0.1:8000/api/inventory/employee/', json=employee, headers=headers)
+                resp = requests.post('http://10.0.0.128:1337/api/inventory/employee/', json=employee, headers=headers)
                 if resp.status_code == 200:
                     print(employee)
     print('populating employee has finished.')

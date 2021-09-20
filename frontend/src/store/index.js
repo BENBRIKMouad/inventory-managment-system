@@ -896,6 +896,9 @@ export default new Vuex.Store({
               email__icontains: email,
               first_name__icontains: first_name,
               last_name__icontains: last_name,
+              pole__icontains: pole,
+              division__icontains: division,
+              function__icontains: _function,
               identifier: identifier,
             },
           })
