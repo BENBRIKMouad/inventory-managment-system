@@ -165,11 +165,7 @@ class ModelViewSet(viewsets.ModelViewSet):
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=False)
     def search(self, request):
@@ -184,12 +180,7 @@ class ModelViewSet(viewsets.ModelViewSet):
         serializer = serializer_class(model, many=True)
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        page = self.paginator.paginate_queryset(serializer.data, request)
-
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
 class OsViewset(viewsets.ModelViewSet):
@@ -219,7 +210,7 @@ class OsViewset(viewsets.ModelViewSet):
         serializer = self.get_serializer(page, many=True)
         return Response(serializer.data)
 
-    def create(self, request):
+    def create(self, request, **kwargs):
         data = request.data
         serializer = self.serializer_class(data=data)
         if serializer.is_valid():
@@ -277,11 +268,7 @@ class OsViewset(viewsets.ModelViewSet):
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=False)
     def search(self, request):
@@ -299,12 +286,7 @@ class OsViewset(viewsets.ModelViewSet):
 
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
 class MachineViewSet(viewsets.ModelViewSet):
@@ -412,11 +394,7 @@ class MachineViewSet(viewsets.ModelViewSet):
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=False)
     def search(self, request):
@@ -437,11 +415,7 @@ class MachineViewSet(viewsets.ModelViewSet):
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
 class SoftwareViewSet(viewsets.ModelViewSet):
@@ -530,11 +504,7 @@ class SoftwareViewSet(viewsets.ModelViewSet):
         if software.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=False)
     def search(self, request):
@@ -551,12 +521,7 @@ class SoftwareViewSet(viewsets.ModelViewSet):
         serializer = serializer_class(software, many=True)
         if software.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
 
 class PoleViewSet(viewsets.ModelViewSet):
@@ -688,12 +653,7 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=False)
     def search(self, request):
@@ -711,12 +671,7 @@ class EmployeeViewset(viewsets.ModelViewSet):
 
         if model.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
-        page = self.paginator.paginate_queryset(serializer.data, request)
-        if page is not None:
-            return self.paginator.get_paginated_response(page)
-
-        return Response(serializer.data, status=status.HTTP_302_FOUND)
+        return Response({'results': serializer.data}, status=status.HTTP_200_OK)
 
     @action(methods=['get', 'post'], detail=True)
     def add_software(self, request, employee=None):

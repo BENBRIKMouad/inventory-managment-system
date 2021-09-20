@@ -219,7 +219,7 @@ export default new Vuex.Store({
       });
     },
 
-    async getMachines(context,url) {
+    async getMachines(context, url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -440,7 +440,7 @@ export default new Vuex.Store({
 
     //models
 
-    async getModels(context,url) {
+    async getModels(context, url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -602,7 +602,7 @@ export default new Vuex.Store({
 
     //os
 
-    async getOs(context,url) {
+    async getOs(context, url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -744,7 +744,7 @@ export default new Vuex.Store({
 
     //employee
 
-    async getEmployee(context,url) {
+    async getEmployee(context, url) {
       context
         .dispatch("verifyRefreshToken")
         .then(async () => {
@@ -884,7 +884,7 @@ export default new Vuex.Store({
 
     async filterEmployee(
       context,
-      { email, first_name, last_name, identifier }
+      { email, first_name, last_name, identifier, pole, division, _function }
     ) {
       context
         .dispatch("verifyRefreshToken")
@@ -896,9 +896,9 @@ export default new Vuex.Store({
               email__icontains: email,
               first_name__icontains: first_name,
               last_name__icontains: last_name,
-              pole__icontains: pole,
-              division__icontains: division,
-              function__icontains: _function,
+              pole__name__icontains: pole,
+              division__name__icontains: division,
+              function__name__icontains: _function,
               identifier: identifier,
             },
           })

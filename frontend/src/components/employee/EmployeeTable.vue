@@ -9,7 +9,7 @@
       </button>
     </div>
 
-      <table class="container">
+    <table class="container">
       <th
         v-for="header in headers"
         :key="header.title"
@@ -482,15 +482,17 @@ export default {
       return functions;
     },
     scrollToTop: function() {
-        var container = document.getElementById("container").scroll({ top: 0, behavior: 'smooth' });
+      var container = document
+        .getElementById("container")
+        .scroll({ top: 0, behavior: "smooth" });
     },
     Next() {
       this.$store.dispatch("getEmployee", this.$store.state.employee.next);
-      this.scrollToTop()
+      this.scrollToTop();
     },
     Perv() {
       this.$store.dispatch("getEmployee", this.$store.state.employee.previous);
-      this.scrollToTop()
+      this.scrollToTop();
     },
   },
   mounted() {
