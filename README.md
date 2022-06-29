@@ -1,4 +1,4 @@
-# what's is this application #
+# what's is this application about #
 the is application was made as my end of the year project wich manage and store the laptops with their references
 and the employee who using it as well as the list software that is installed on the laptop
 
